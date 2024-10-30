@@ -1,0 +1,32 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align: center;">Bảng lương chính</h1>
+{% include 'partials/filter_salary.html' %}
+<br>
+<table class="table table-hover table-bordered">
+  <thead class="bg-tab">
+    <tr>
+      <th scope="col">Tài khoản</th>
+      <th scope="col">Họ tên</th>
+      <th scope="col">Số giờ làm</th>
+      <th scope="col">Tổng lương</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sheet in sheets %}
+    <tr>
+      <td><a href="/profile/{{sheet.user__username}}/" style="text-decoration: none;">{{ sheet.user__username }}</a></td>
+      <td>{{ sheet.user__first_name }} {{ sheet.user__last_name }}</td>
+      <td>{{ sheet.total_work_hour|floatformat:2 }}</td>
+      <td>{{ sheet.total_salary }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+
+{% include 'partials/paginator.html' %}
+
+{% endblock %}

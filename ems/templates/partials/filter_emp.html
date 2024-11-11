@@ -1,0 +1,34 @@
+<div class="col-12 d-flex justify-content-end">
+  <form action="" class="col-8 d-flex gap-2 justify-content-end">
+    <div>
+      <label for="keyword">Từ khóa</label>
+      <input class="form-control" id="keyword" type="text" placeholder="Tài khoản" value="{{ keyword }}" name="keyword" style="height: 35.35px;">
+    </div>
+    <div>
+      <label for="select-department">Phòng</label><br>
+      <select id="select-department" name="department" class="form-select" style="cursor: pointer;">
+        <option {% if not department %} selected {% endif %} value="">Tất Cả</option>
+        {% for dep in departments %}
+        <option {% if department == dep.name %} selected {% endif %}>{{ dep.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="select-position">Vị trí</label><br>
+      <select id="select-position" name="position" class="form-select" style="cursor: pointer;" aria-label="Default select example">
+        <option {% if not position %} selected {% endif %} value="">Tất Cả</option>
+        <option {% if position == 'Nhân viên' %} selected {% endif %}>Nhân viên</option>
+        <option {% if position == 'Trưởng phòng' %} selected {% endif %}>Trưởng phòng</option>
+      </select>
+    </div>
+    <div>
+      <label for="start-date">Ngày Bắt Đầu</label><br>
+      <input type="date" name="start-date" id="start-date" class="form-control" style="cursor: pointer;" value="{% if start_date %}{{ start_date }}{% endif %}">
+    </div>
+    <div>
+      <label for="end_date">Ngày Kết Thúc</label><br>
+      <input type="date" name="end-date" id="end_date" class="form-control" style="cursor: pointer;" value="{% if end_date %}{{ end_date }}{% endif %}">
+    </div>
+    <button type="submit" class="btn btn-info bg-filter mt-4">Lọc</button>
+  </form>
+</div>

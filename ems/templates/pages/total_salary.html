@@ -1,0 +1,83 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Bảng lương chính</h1>
+{% include 'partials/filter_salary.html' %}
+<br>
+
+<table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
+    <tr>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Tài khoản</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Họ tên</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Số giờ làm</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Tổng lương</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sheet in sheets %}
+    <tr style="transition: background-color 0.3s;">
+      <td class="text-center align-middle border-cell">
+        <a href="/profile/{{sheet.user__username}}/" class="link-highlight">{{ sheet.user__username }}</a>
+      </td>
+      <td class="text-center align-middle border-cell">{{ sheet.user__first_name }} {{ sheet.user__last_name }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.total_work_hour|floatformat:2 }} giờ</td>
+      <td class="text-center align-middle border-cell">{{ sheet.total_salary }} VNĐ</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+
+{% include 'partials/paginator.html' %}
+
+<style>
+  /* Màu nền cam nhạt và hiệu ứng hover */
+  .table-bordered tbody tr:nth-child(odd) {
+    background-color: #FFF3E0;
+  }
+
+  .table-bordered tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #FFE0B2;
+  }
+
+  /* Header bảng màu cam đậm */
+  .bg-tab {
+    background-color: #E67E22 !important;
+    color: white !important;
+  }
+
+  /* Border khung ngoài của bảng */
+  .custom-border {
+    border: 3px solid #E67E22; /* Border ngoài màu cam đậm */
+    border-radius: 10px; /* Bo tròn các góc của khung ngoài */
+  }
+
+  /* Border cho từng ô */
+  .border-cell {
+    border: 1px solid #E67E22;
+  }
+
+  /* Liên kết với màu cam */
+  .link-highlight {
+    color: #E67E22;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .link-highlight:hover {
+    color: #D35400;
+    text-decoration: underline;
+  }
+    /* Border hàng cuối cùng */
+  .table-bordered tbody tr:last-child {
+    border-bottom: 2px solid #E67E22;
+  }
+</style>
+
+{% endblock %}

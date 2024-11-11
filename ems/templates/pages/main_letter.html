@@ -1,0 +1,94 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Danh sách góp ý</h1>
+{% include 'partials/filter_letter.html' %}
+<br>
+
+<table class="table table-hover table-bordered custom-border" style="border-radius: 8px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
+    <tr>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Thời gian</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Chủ đề</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Người gửi</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Trạng thái</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Nội dung</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for letter in page_obj %}
+    <tr style="transition: background-color 0.3s;">
+      <td class="text-center align-middle">{{ letter.created_at|date:"H:i, d/m/y" }}</td>
+      <td class="text-center align-middle">{{ letter.topic.name }}</td>
+      <td class="text-center align-middle">
+      {% if letter.is_anonymous %}
+        Ẩn Danh
+      {% else %}
+        {{ letter.user.first_name }} {{ letter.user.last_name }}
+      {% endif %}
+      </td>
+      <td class="text-center align-middle">
+        {{ letter.status }}
+      </td>
+      <td class="text-center align-middle">
+        <a class="badge bg-status-left" style="text-decoration: none;" href="/letters/{{letter.id}}/">Xem chi tiết</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+
+{% include 'partials/paginator.html' %}
+
+<style>
+  /* Bảng nền cam nhạt và hiệu ứng hover nhẹ */
+  .table-bordered tbody tr:nth-child(odd) {
+    background-color: #FFF3E0;
+  }
+
+  .table-bordered tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #FFE0B2;
+  }
+
+  /* Header bảng màu cam đậm */
+  .bg-tab {
+    background-color: #E67E22 !important;
+    color: white !important;
+  }
+
+  /* Badge trạng thái */
+  .badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+  }
+
+  .badge.bg-status-left {
+    background-color: #D35400 !important; /* Cam đậm */
+    color: #fff;
+  }
+
+  .badge.bg-status-right {
+    background-color: #27AE60 !important; /* Xanh lá nhạt */
+    color: #fff;
+  }
+
+  /* Border toàn khung bảng */
+  .custom-border {
+    border: 2px solid #E67E22; /* Border màu cam đậm */
+    border-radius: 10px;
+  }
+
+  /* Border hàng cuối cùng */
+  .table-bordered tbody tr:last-child {
+    border-bottom: 2px solid #E67E22;
+  }
+</style>
+
+{% endblock %}

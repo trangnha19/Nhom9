@@ -1,0 +1,98 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-orange">
+  <div class="container-fluid me-5 ms-5">
+    <a class="navbar-brand" href="/" style="padding-top: 0;">
+      <img src="{% static 'images/logo.png' %}" height="30px" alt="Ảnh logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse font-rbt" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-4 gap-4">
+        {% if request.user.is_authenticated and not request.user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/time-keeping/' %} text-select {% endif %} nav-link-hover" href="/time-keeping/">CHẤM CÔNG</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/sheet/'|add:request.user.username|add:'/' %} text-select {% endif %} nav-link-hover" href="/sheet/{{request.user.username}}/">BẢNG CÔNG</a>
+        </li>
+        {% endif %}
+
+        {% if request.user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/management/' %} text-select {% endif %} nav-link-hover" href="/management/" style="font-size: 16px;">DASHBOARD</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/management/employee/' %} text-select {% endif %} nav-link-hover" href="/management/employee/" style="font-size: 16px;">NHÂN VIÊN</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/management/sheet/' %} text-select {% endif %} nav-link-hover" href="/management/sheet/" style="font-size: 16px;">BẢNG CÔNG</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/management/salary/' %} text-select {% endif %} nav-link-hover" href="/management/salary/" style="font-size: 16px;">BẢNG LƯƠNG</a>
+        </li>
+        {% endif %}
+      </ul>
+      {% if request.user.is_authenticated %}
+      <ul class="navbar-nav">
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/letters/' %} text-select {% endif %} nav-link-hover" href="/management/letter/" style="font-size: 16px;"><i class="fa-regular fa-envelope"></i></a>
+        </li>
+        {% endif %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle nav-link-hover" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 16px;">
+            <i class="fa-regular fa-user"></i> TÀI KHOẢN
+          </a>
+          <ul class="dropdown-menu bg-orange">
+            <li><a class="dropdown-item" href="/profile/{{request.user.username}}/" style="font-size: 16px;">HỒ SƠ</a></li>
+            <li><a class="dropdown-item" href="/logout/">ĐĂNG XUẤT</a></li>
+          </ul>
+        </li>
+      </ul>
+      {% else %}
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/login/' %} text-select {% endif %} nav-link-hover" href="/login/">ĐĂNG NHẬP</a>
+        </li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<!-- <style>
+  /* Màu nền của navbar */
+  .bg-orange {
+    background-color: #FF7043;
+  }
+
+  /* Hiệu ứng hover và transition cho liên kết */
+  .nav-link-hover {
+    color: white;
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+
+  .nav-link-hover:hover {
+    color: #FFAB91; /* Màu cam nhạt hơn khi hover */
+    background-color: rgba(255, 255, 255, 0.1); /* Nền nhạt khi hover */
+    border-radius: 5px; /* Bo góc nhẹ */
+    padding: 5px 10px;
+  }
+
+  /* Dropdown menu */
+  .dropdown-menu.bg-orange {
+    background-color: #FF7043;
+  }
+
+  /* Chỉnh màu chữ trong dropdown */
+  .dropdown-item {
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dropdown-item:hover {
+    background-color: #FFAB91; /* Màu nền dropdown nhạt khi hover */
+    color: #333; /* Màu chữ tối hơn khi hover */
+  }
+</style> -->

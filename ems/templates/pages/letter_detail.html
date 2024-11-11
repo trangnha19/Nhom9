@@ -1,0 +1,38 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align:center; font-weight: 400; text-shadow: 1.5px 1.5px 1.5px rgba(0, 0, 0, 0.5);" class="mb-4">CHI TIẾT GÓP Ý</h1>
+<div class="container" style="display:flex; justify-content:center">
+  <div style="width: 80%;">
+    {% if request.user.is_superuser %}
+    <div>Người gửi: {{ letter.user.first_name }} {{ letter.user.last_name }}</div>
+    {% endif %}
+    <div>Chủ đề: {{ letter.topic.name }}</div>
+    <div>Nội dung: {{ letter.content }}</div>
+    <div>Thời gian: {{ letter.created_at|date:"H:i, d/m/yy" }}</div>
+    <div>Trạng thái: {{ letter.status }}</div>
+    <br>
+    <center>
+      {% if request.user.is_superuser and letter.status == 'Đang xử lý' %}
+      <form method="post" form-status>
+        {% csrf_token %}
+        <input type="text" hidden>
+        <button type="button" class="btn btn-info bg-btn mt-3 text-light pe-5 ps-5 pt-2 pb-2">
+          Đã xử lý
+        </button>
+      </form>
+      {% endif %}
+      {% if request.user.is_superuser %}
+      <a href="/management/letter/" class="btn btn-info bg-btn mt-3 text-light pe-5 ps-5 pt-2 pb-2">Quản lý hòm thư</a>
+      {% else %}
+      <a href="/letters/" class="btn btn-info bg-btn mt-3 text-light pe-5 ps-5 pt-2 pb-2">Quay lại hòm thư</a>
+      {% endif %}
+    </center>
+  </div>
+</div>
+<br><br>
+
+{% load static %}
+<script src="{% static 'scripts/letter_detail.js' %}"></script>
+{% endblock %}

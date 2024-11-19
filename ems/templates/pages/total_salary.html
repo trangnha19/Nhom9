@@ -1,5 +1,6 @@
 {% extends '../layouts/base.html' %}
 
+{% load humanize %}
 {% block main %}
 <br>
 <h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Bảng lương chính</h1>
@@ -9,10 +10,21 @@
 <table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
   <thead class="bg-tab text-white" style="background-color: #E67E22;">
     <tr>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Tài khoản</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Họ tên</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Số giờ làm</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Tổng lương</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 8%">Tài khoản</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 10%">Họ tên</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Lương cơ bản</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Số công chuẩn</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 6%">Số ngày nghỉ không lương</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 6%">Số công hưởng lương</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Lương ngày công</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 6%">Số giờ tăng ca</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Lương tăng ca</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Thưởng chuyên cần</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 6%">Số giờ đi trễ/về sớm</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Phạt đi trễ/về sớm</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Khấu trừ BHXH</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Thuế TNCN</th>
+      <th scope="col" class="text-center" style="vertical-align: middle; width: 8%">Thực lĩnh</th>
     </tr>
   </thead>
   <tbody>
@@ -22,8 +34,19 @@
         <a href="/profile/{{sheet.user__username}}/" class="link-highlight">{{ sheet.user__username }}</a>
       </td>
       <td class="text-center align-middle border-cell">{{ sheet.user__first_name }} {{ sheet.user__last_name }}</td>
-      <td class="text-center align-middle border-cell">{{ sheet.total_work_hour|floatformat:2 }} giờ</td>
-      <td class="text-center align-middle border-cell">{{ sheet.total_salary }} VNĐ</td>
+      <td class="text-center align-middle border-cell">{{ sheet.total_salary|intcomma }} </td>
+      <td class="text-center align-middle border-cell">{{ 26 }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.missing_days }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.att_day }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.real_salary|intcomma }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.ot_sum }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.ot_sal }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.awrd }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.total_late_early_count }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.neg_sal }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.bhxh|intcomma }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.tncn|intcomma }} </td>
+      <td class="text-center align-middle border-cell">{{ sheet.real_sal|intcomma }} </td>
     </tr>
     {% endfor %}
   </tbody>

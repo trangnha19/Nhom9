@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from django.db.models import Sum, Q
+from django.db.models import Count, Case, When, F, Sum
 from django.contrib import messages
 from datetime import datetime, timedelta
 from myapp.models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
+from decimal import Decimal
 
 # Create your views here.
 def home(request):
@@ -149,17 +150,71 @@ def total_salary(request):
     current_year = timezone.now().year
     month_req = request.GET.get('month', current_month)
     year_req = request.GET.get('year', current_year)
+    
+    # The number of days in the month
+    num_days_in_month = 26
+        
+# Run the query
     sheets = Sheet.objects.filter(
-      date__month = month_req, 
-      date__year = year_req).values('user__username', 'user__first_name', 'user__last_name').annotate(
+        date__month=month_req, 
+        date__year=year_req
+    ).values('user__username', 'user__first_name', 'user__last_name').annotate(
         total_work_hour=Sum('work_hour'),
-        total_salary=Sum('salary')).order_by('user__username')
+        total_salary=Sum('salary'),
+        late_count=Count(Case(When(status='Đến Muộn', then=1))),
+        early_count=Count(Case(When(status='Về Sớm', then=1))),
+        total_late_early_count=F('late_count') + F('early_count'),
+        ot_sum=Sum('ot'),
+        days_worked=Count('date', distinct=True)  # Count distinct days worked
+    ).order_by('user__username')
+
+    # Calculate missing days and real_salary after the query
+    for sheet in sheets:
+      sheet['missing_days'] = num_days_in_month - sheet['days_worked']
+      sheet['att_day'] = 26 - sheet['missing_days']
+      # Calculate early_time: number of days with early exit (before 6 PM)
+      early_time = max(0, sheet['total_late_early_count'] - 2)
+      
+      # Calculate total_work_day: You can use `days_worked` for this
+      total_work_day = sheet['days_worked']
+      sheet['ot_sal'] = (Decimal(100000) * sheet['ot_sum'])
+      sheet['neg_sal'] = (Decimal(50000) * Decimal(early_time))
+      # Calculate real_salary based on the formula provided
+      real_salary = int(sheet['total_salary'] / Decimal(26) * Decimal(total_work_day)) - sheet['neg_sal'] + sheet['ot_sal']
+      sheet['real_salary'] = real_salary
+      
+      if sheet['missing_days'] == 0 and sheet['total_late_early_count'] == 0:
+        sheet['awrd'] = 500000
+      else:
+        sheet['awrd'] = 0
+      
+      # Calculate bhxh and tncn using Decimal
+      bhxh = int(real_salary * Decimal(10.5) / Decimal(100))
+      sheet['bhxh'] = bhxh
+      
+      tncn = int(real_salary * Decimal(5) / Decimal(100))
+      sheet['tncn'] = tncn
+      
+      real_sal = real_salary - bhxh - tncn + sheet['awrd']
+      sheet['real_sal'] = real_sal
+
+        
+          
+    # Filter by keyword if provided
     keyword = request.GET.get('keyword', '')
     if keyword:
-      sheets = sheets.filter(user__username__icontains=keyword)
-    return render(request, 'pages/total_salary.html', {'sheets': sheets, 'list_month':range(1, 13), 'list_year': range(2023,2026),
-                                                       'year_req': int(year_req), 'title': title,
-                                                       'month_req': int(month_req), 'keyword': keyword})
+        sheets = sheets.filter(user__username__icontains=keyword)
+      
+      # Render the results
+    return render(request, 'pages/total_salary.html', {
+        'sheets': sheets, 
+        'list_month': range(1, 13), 
+        'list_year': range(2023, 2026),
+        'year_req': int(year_req), 
+        'title': title,
+        'month_req': int(month_req), 
+        'keyword': keyword
+      })
   else:
     messages.warning(request, 'Không có quyền truy cập')
     return redirect('/')

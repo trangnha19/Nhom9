@@ -16,7 +16,7 @@
       <th scope="col" class="text-center" style="vertical-align: middle;">Ra ca</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Tình trạng</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Giờ làm</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Lương</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Tăng ca</th>
     </tr>
   </thead>
   <tbody>
@@ -33,7 +33,7 @@
       <td class="text-center align-middle border-cell">{{ sheet.checkout|date:"H:i" }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.status }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.work_hour }}</td>
-      <td class="text-center align-middle border-cell">{{ sheet.salary }} VNĐ</td>
+      <td class="text-center align-middle border-cell">{{ sheet.ot }} giờ</td>
     </tr>
     {% endfor %}
   </tbody>

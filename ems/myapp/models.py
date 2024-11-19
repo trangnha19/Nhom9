@@ -1,3 +1,4 @@
+from datetime import time, timedelta
 from datetime import datetime, time
 from django.db import models
 from django.contrib.auth.models import User
@@ -74,26 +75,40 @@ class Sheet(models.Model):
     checkout=models.TimeField(blank=True, null=True)
     work_hour=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     salary=models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
-    status=models.CharField(max_length=20, choices=[('Đúng Giờ', 'Đúng Giờ'), ('Muộn', 'Muộn')], default='Đúng Giờ')
+    status=models.CharField(max_length=20, choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn'), ('Về Sớm', 'Về Sớm')], default='Đúng Giờ')
+    ot = models.IntegerField(null=True, blank=True, default=1)
 
     def __str__(self):
         return f'{self.user.username} - {self.date}'
 
-    def is_late(self):
+
+    def update_status(self):
+        # Check if the user is late (after 8 AM) or leaves early (before 6 PM)
         if self.checkin > time(8, 0, 0):
-            self.status = 'Muộn'
+            self.status = 'Đến Muộn'
+        elif self.checkout and self.checkout < time(18, 0, 0):
+            self.status = 'Về Sớm'
+        else:
+            self.status = 'Đúng Giờ'
+        
+        # Calculate overtime (OT) if checkout time is after 6 PM
+        self.ot = max(0, int(self.work_hour - 10))
+
+
 
     def calculate_salary(self):
         profile = Profile.objects.get(user=self.user)
-        if self.work_hour is not None:
-            if self.status == 'Muộn':
-                salary_1hour = profile.position.department.salary * Decimal(0.8)
-            else:
-                salary_1hour = profile.position.department.salary
-            rate = profile.position.salary_coef * salary_1hour
-            self.salary = rate * Decimal(self.work_hour)
-        else:
-            self.salary = 0
+        # if self.work_hour is not None:
+        #     if self.status == 'Muộn':
+        #         salary_1hour = profile.position.department.salary * Decimal(0.8)
+        #     else:
+        #         salary_1hour = profile.position.department.salary
+        #     rate = profile.position.salary_coef * salary_1hour
+        #     self.salary = rate * Decimal(self.work_hour)
+        # else:
+        #     self.salary = 0
+
+        self.salary = profile.position.salary_coef * profile.position.department.salary
 
     def save(self, *args, **kwargs):
         if self.checkin and self.checkout:
@@ -101,6 +116,6 @@ class Sheet(models.Model):
             checkout = timezone.datetime.combine(self.date, self.checkout)
             self.work_hour = (checkout - checkin).seconds/3600
 
-        self.is_late()
+        self.update_status()
         self.calculate_salary()
         super().save( *args, **kwargs)

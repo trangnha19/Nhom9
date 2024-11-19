@@ -160,7 +160,7 @@ def total_salary(request):
         date__year=year_req
     ).values('user__username', 'user__first_name', 'user__last_name').annotate(
         total_work_hour=Sum('work_hour'),
-        total_salary=Sum('salary'),
+        total_salary=F('user__profile__salary'),
         late_count=Count(Case(When(status='Đến Muộn', then=1))),
         early_count=Count(Case(When(status='Về Sớm', then=1))),
         total_late_early_count=F('late_count') + F('early_count'),
@@ -170,7 +170,7 @@ def total_salary(request):
 
     # Calculate missing days and real_salary after the query
     for sheet in sheets:
-      sheet['missing_days'] = num_days_in_month - sheet['days_worked']
+      sheet['missing_days'] = max(0, num_days_in_month - sheet['days_worked'])
       sheet['att_day'] = 26 - sheet['missing_days']
       # Calculate early_time: number of days with early exit (before 6 PM)
       early_time = max(0, sheet['total_late_early_count'] - 2)
@@ -181,7 +181,7 @@ def total_salary(request):
       sheet['neg_sal'] = (Decimal(50000) * Decimal(early_time))
       # Calculate real_salary based on the formula provided
       real_salary = int(sheet['total_salary'] / Decimal(26) * Decimal(total_work_day)) - sheet['neg_sal'] + sheet['ot_sal']
-      sheet['real_salary'] = real_salary
+      sheet['real_salary'] = int(sheet['total_salary'] / 26)
       
       if sheet['missing_days'] == 0 and sheet['total_late_early_count'] == 0:
         sheet['awrd'] = 500000

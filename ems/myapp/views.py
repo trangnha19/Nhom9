@@ -112,7 +112,7 @@ def time_keeping(request):
                 Sheet.objects.create(user=request.user,date=datetime.now().date(),checkin=datetime.now().time())
                 messages.success(request, 'Check-in thành công, làm việc nào!!!')
             if check == 'out':
-                sheet = Sheet.objects.get(user=request.user, date=datetime.now().date())
+                sheet = Sheet.objects.filter(user=request.user, date=datetime.now().date()).order_by('-id').first()
                 sheet.checkout = datetime.now().time()
                 sheet.save()
                 messages.success(request, 'Cảm ơn bạn đã đi làm ngày hôm này!!!')

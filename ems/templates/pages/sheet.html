@@ -13,7 +13,7 @@
       <th scope="col" class="text-center" style="vertical-align: middle;">Hết ca</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Tình trạng</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Giờ làm</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Lương</th>
+      <!-- <th scope="col" class="text-center" style="vertical-align: middle;">Lương</th> -->
     </tr>
   </thead>
   <tbody>
@@ -24,7 +24,7 @@
       <td class="text-center align-middle border-cell">{{ sheet.checkout|date:"H:i" }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.status }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.work_hour }}</td>
-      <td class="text-center align-middle border-cell">{{ sheet.salary }} VNĐ</td>
+      <!-- <td class="text-center align-middle border-cell">{{ sheet.salary }} VNĐ</td> -->
     </tr>
     {% endfor %}
   </tbody>
@@ -36,12 +36,12 @@
   <div class="col-5 text-end" style="color: #2980B9;">
     <div class="mb-2">Đi làm trễ:</div>
     <div class="mb-2">Tổng giờ làm:</div>
-    <div class="mb-2">Tổng tiền lương:</div>
+    <!-- <div class="mb-2">Tổng tiền lương:</div> -->
   </div>
   <div class="col-5 text-start">
     <div class="mb-2" style="color: #34495E;">{{ sheets.count_late }} buổi</div>
     <div class="mb-2" style="color: #34495E;">{{ sheets.total_hour|floatformat:2 }} giờ</div>
-    <div class="mb-2" style="color: #34495E;">{{ sheets.total_salary|floatformat:2 }} VNĐ</div>
+    <!-- <div class="mb-2" style="color: #34495E;">{{ sheets.total_salary|floatformat:2 }} VNĐ</div> -->
   </div>
 </div>
 

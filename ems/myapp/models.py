@@ -40,6 +40,7 @@ class Profile(models.Model):
     major = models.CharField(max_length=100)
     contract_period = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    salary = models.IntegerField(default=0)
 
     def __str__(self):
          return f'Profile: {self.user.username}'
@@ -86,29 +87,14 @@ class Sheet(models.Model):
         # Check if the user is late (after 8 AM) or leaves early (before 6 PM)
         if self.checkin > time(8, 0, 0):
             self.status = 'Đến Muộn'
-        elif self.checkout and self.checkout < time(18, 0, 0):
+        elif self.checkout and self.checkout < time(17, 0, 0):
             self.status = 'Về Sớm'
         else:
             self.status = 'Đúng Giờ'
         
         # Calculate overtime (OT) if checkout time is after 6 PM
-        self.ot = max(0, int(self.work_hour - 10))
-
-
-
-    def calculate_salary(self):
-        profile = Profile.objects.get(user=self.user)
-        # if self.work_hour is not None:
-        #     if self.status == 'Muộn':
-        #         salary_1hour = profile.position.department.salary * Decimal(0.8)
-        #     else:
-        #         salary_1hour = profile.position.department.salary
-        #     rate = profile.position.salary_coef * salary_1hour
-        #     self.salary = rate * Decimal(self.work_hour)
-        # else:
-        #     self.salary = 0
-
-        self.salary = profile.position.salary_coef * profile.position.department.salary
+        if self.work_hour:
+            self.ot = max(0, int(self.work_hour - 9))
 
     def save(self, *args, **kwargs):
         if self.checkin and self.checkout:
@@ -117,5 +103,4 @@ class Sheet(models.Model):
             self.work_hour = (checkout - checkin).seconds/3600
 
         self.update_status()
-        self.calculate_salary()
         super().save( *args, **kwargs)

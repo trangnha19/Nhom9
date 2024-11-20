@@ -14,7 +14,6 @@
       <th scope="col" class="text-center" style="vertical-align: middle;">Phòng</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Vị trí</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Ngày vào</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày nghỉ</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Tình trạng</th>
     </tr>
   </thead>
@@ -29,14 +28,15 @@
       <td class="text-center align-middle">{{ emp.profile.position.name }}</td>
       <td class="text-center align-middle">{{ emp.profile.start_date|date:"d/m/Y" }}</td>
       <td class="text-center align-middle">
-        {{ emp.profile.end_date|date:"d/m/Y" }}
-      </td>
-      <td class="text-center align-middle">
-        {% if emp.profile.end_date %}
-          <span class="badge bg-status-left">Đã nghỉ</span>
-        {% else %}
-          <span class="badge bg-status-right">Đang làm</span>
-        {% endif %}
+        <form method="POST" action="">
+          {% csrf_token %}
+          <input type="hidden" name="change_status" value="{{ emp.id }}">
+          <select name="status" class="form-select custom-dropdown" onchange="this.form.submit()">
+            {% for key, value in emp.profile.STATUS_CHOICES %}
+              <option value="{{ key }}" {% if emp.profile.status == key %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+          </select>
+        </form>
       </td>
     </tr>
     {% endfor %}
@@ -66,21 +66,36 @@
     color: white !important;
   }
 
-  /* Badge trạng thái */
-  .badge {
+  /* Giảm khoảng cách giữa các hàng */
+  .table-bordered td,
+  .table-bordered th {
+    padding: 5px 10px; /* Điều chỉnh khoảng cách nội dung trong các ô */
+    vertical-align: middle;
+  }
+
+  /* Dropdown chỉnh trạng thái */
+  .custom-dropdown {
+    width: 100%;
+    padding: 6px;
     font-size: 0.9rem;
-    padding: 5px 10px;
-    border-radius: 12px;
+    border: 2px solid #E67E22;
+    border-radius: 8px;
+    background-color: #FFF3E0;
+    color: #D35400;
+    text-align: center; /* Căn giữa chữ */
+    text-align-last: center; /* Căn giữa chữ trong tùy chọn */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .badge.bg-status-left {
-    background-color: #D35400 !important; /* Cam đậm */
-    color: #fff;
+  .custom-dropdown:hover {
+    border-color: #D35400; /* Màu viền khi hover */
+    box-shadow: 0 0 8px rgba(211, 84, 0, 0.5); /* Đổ bóng khi hover */
   }
 
-  .badge.bg-status-right {
-    background-color: #27AE60 !important; /* Xanh lá nhạt */
-    color: #fff;
+  .custom-dropdown:focus {
+    outline: none;
+    border-color: #D35400; /* Màu viền khi focus */
+    box-shadow: 0 0 10px rgba(211, 84, 0, 0.7); /* Đổ bóng khi focus */
   }
 
   /* Border toàn khung bảng */

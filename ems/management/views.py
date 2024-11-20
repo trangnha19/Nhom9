@@ -260,3 +260,21 @@ def letter(request):
   else:
     messages.warning(request, 'Không có quyền truy cập')
     return redirect('/')
+  
+def admin_review_requests(request):
+    title = 'Đơn nghỉ phép'
+    requests = DayOffRequest.objects.all().order_by('-start_date')
+
+    if request.method == 'POST':
+        request_id = request.POST.get('request_id')
+        status = request.POST.get('status')
+        admin_comment = request.POST.get('admin_comment', '')
+
+        day_off_request = DayOffRequest.objects.get(id=request_id)
+        day_off_request.status = status
+        day_off_request.admin_comment = admin_comment
+        day_off_request.save()
+        # messages.success(request, 'The request has been updated.')
+
+    context = {'title': title, 'requests': requests}
+    return render(request, 'pages/admin_review_requests.html', context)

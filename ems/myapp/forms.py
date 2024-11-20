@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django import forms
 from .models import Profile, Letter
 
+from django import forms
+from .models import DayOffRequest
 
 class LetterForm(forms.ModelForm):
   class Meta:
@@ -46,4 +48,15 @@ class SignInForm(forms.ModelForm):
 		widgets = {'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tên Đăng Nhập'}),
 						'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mật Khẩu'})}
 		labels = {'username': '', 'password': ''}
+  
+
+class DayOffRequestForm(forms.ModelForm):
+    class Meta:
+        model = DayOffRequest
+        fields = ['start_date', 'end_date', 'reason']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'reason': forms.Textarea(attrs={'rows': 4}),
+        }
 

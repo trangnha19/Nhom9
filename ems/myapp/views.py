@@ -5,6 +5,8 @@ from django.contrib.auth.models import User, auth
 from datetime import datetime
 from django.db.models import Sum
 from django.contrib import messages
+from .forms import DayOffRequestForm
+from .models import DayOffRequest
 
 # Create your views here.
 def home(request):
@@ -176,3 +178,30 @@ def letter_detail(request, idletter):
             return redirect('letters')
     except Letter.DoesNotExist:
         return redirect('letters')
+    
+def request_day_off(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        user = None
+
+    if request.method == 'POST':
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        reason = request.POST['reason']
+
+        # Save the new day-off request
+        DayOffRequest.objects.create(
+            user=user,
+            start_date=start_date,
+            end_date=end_date,
+            reason=reason,
+            status='pending'  # Default status
+        )
+        # Redirect to the same page with the username
+        return redirect('request-day-off', username=username)
+
+    # Retrieve submitted requests for the current user
+    day_off_requests = DayOffRequest.objects.filter(user=user).order_by('-start_date')
+    return render(request, 'pages/request_day_off.html', {'day_off_requests': day_off_requests})
+    

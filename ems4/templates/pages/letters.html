@@ -1,0 +1,51 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align:center; font-weight: 400; text-shadow: 1.5px 1.5px 1.5px rgba(0, 0, 0, 0.5);" class="mb-4">HỘP THƯ GÓP Ý</h1>
+<div class="container" style="display:flex; justify-content:center">
+  <div style="width: 80%;">
+    <div class="font-rbt mt-3 mb-3" style="font-size: 20px;">
+      <em>
+        Cảm ơn bạn đã đóng góp ý kiến!
+      </em>
+    </div>
+    <div>
+    {% if my_letters %}
+      {% for lt in my_letters %}
+        <h5 class="mt-2" style="font-size:20px">
+          {% if lt.is_anonymous %} Gửi ẩn danh {% else %} Gửi công khai {% endif %}: {{ lt.created_at|date:"H:i, d/m/yy" }}
+        </h5>
+        <div class="px-5">
+          <div style="font-size: 18px;" class="pb-2">- Chủ đề: {{ lt.topic.name }}</div>
+          <div style="font-size: 18px;" class="pb-2">- Trạng thái: {{ lt.status }}</div>
+          <a href="/letters/{{ lt.id }}/" style="text-decoration: none;">- Xem chi tiết</a>
+        </div>
+      {% endfor %}
+    {% else %}
+        <h5 style="font-size:20px">Bạn chưa đóng góp ý kiến</h5>
+    {% endif %}
+    <center>
+      <button class="btn btn-info bg-btn btn-letter mt-3 text-light pe-5 ps-5 pt-2 pb-2">Đóng góp ý kiến</button>
+    </center>
+    </div>
+    <div class="mt-2 div-form d-none">
+      <div class="d-flex" style="justify-content: flex-end;">
+        <i style="cursor: pointer;" class="fa-regular fa-circle-xmark close"></i>
+      </div>
+      <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <center>
+            <button class="btn btn-info bg-btn mt-3 text-light pe-5 ps-5 pt-2 pb-2">Gửi</button>
+        </center>
+      </form>
+    </div>
+  </div>
+</div>
+<br><br>
+
+{% load static %}
+<script src="{% static 'scripts/letters.js' %}"></script>
+
+{% endblock %}

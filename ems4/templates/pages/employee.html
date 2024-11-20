@@ -1,0 +1,123 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Quản lý nhân viên</h1>
+{% include 'partials/filter_emp.html' %}
+<br>
+
+<table class="table table-hover table-bordered custom-border" style="border-radius: 8px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
+    <tr>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Tài khoản</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Họ tên</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Phòng</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Vị trí</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày vào</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Tình trạng</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for emp in page_obj %}
+    <tr style="transition: background-color 0.3s;">
+      <td class="text-center align-middle">{{ emp.username }}</td>
+      <td class="align-middle">
+        <a href="/profile/{{ emp.username }}/" style="text-decoration: none; color: #E67E22; font-weight: 500;">{{ emp.first_name }} {{ emp.last_name }}</a>
+      </td>
+      <td class="text-center align-middle">{{ emp.profile.position.department }}</td>
+      <td class="text-center align-middle">{{ emp.profile.position.name }}</td>
+      <td class="text-center align-middle">{{ emp.profile.start_date|date:"d/m/Y" }}</td>
+      <td class="text-center align-middle">
+        <div class="custom-dropdown-container">
+          <form method="POST" action="">
+            {% csrf_token %}
+            <input type="hidden" name="change_status" value="{{ emp.id }}">
+            <select name="status" class="custom-dropdown" onchange="this.form.submit()">
+              {% for key, value in emp.profile.STATUS_CHOICES %}
+              <option value="{{ key }}" {% if emp.profile.status == key %}selected{% endif %}>{{ value }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+
+{% include 'partials/paginator.html' %}
+
+<style>
+  /* Bảng nền cam nhạt và hiệu ứng hover nhẹ */
+  .table-bordered tbody tr:nth-child(odd) {
+    background-color: #FFF3E0;
+  }
+
+  .table-bordered tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #FFE0B2;
+  }
+
+  /* Header bảng màu cam đậm */
+  .bg-tab {
+    background-color: #E67E22 !important;
+    color: white !important;
+  }
+
+  /* Giảm khoảng cách giữa các hàng */
+  .table-bordered td,
+  .table-bordered th {
+    padding: 3px 5px; /* Giảm padding để khoảng cách nhỏ nhất */
+    vertical-align: middle;
+  }
+
+  /* Container căn giữa dropdown */
+  .custom-dropdown-container {
+    display: flex; /* Kích hoạt Flexbox */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    height: 100%; /* Đảm bảo chiều cao container phù hợp */
+  }
+
+  /* Dropdown chỉnh trạng thái */
+  .custom-dropdown {
+    width: 100%;
+    padding: 4px;
+    font-size: 0.85rem;
+    border: 2px solid #E67E22;
+    border-radius: 8px;
+    background-color: #FFF3E0;
+    color: #D35400;
+    text-align: center; /* Căn giữa chữ */
+    text-align-last: center; /* Căn giữa chữ trong tùy chọn */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .custom-dropdown:hover {
+    border-color: #D35400; /* Màu viền khi hover */
+    box-shadow: 0 0 8px rgba(211, 84, 0, 0.5); /* Đổ bóng khi hover */
+  }
+
+  .custom-dropdown:focus {
+    outline: none;
+    border-color: #D35400; /* Màu viền khi focus */
+    box-shadow: 0 0 10px rgba(211, 84, 0, 0.7); /* Đổ bóng khi focus */
+  }
+
+  /* Border toàn khung bảng */
+  .custom-border {
+    border: 2px solid #E67E22; /* Border màu cam đậm */
+    border-radius: 10px;
+  }
+
+  /* Border hàng cuối cùng */
+  .table-bordered tbody tr:last-child {
+    border-bottom: 2px solid #E67E22;
+  }
+</style>
+
+{% endblock %}

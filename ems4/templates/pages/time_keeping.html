@@ -1,0 +1,60 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<br><br><br><br>
+{% if request.user.sheet_set.last.date != date %}
+<h1 class="mb-3" style="text-align: center; font-weight: 400;">
+    CHÚC
+    <em style="text-transform: uppercase; color: #0099D6;">
+        {{ request.user.first_name }} {{ request.user.last_name }}
+    </em>
+    NGÀY MỚI TỐT LÀNH
+</h1>
+<div style="text-align: center; font-weight: 700;">Check-in ngay để bắt đầu làm việc nhé</div>
+<br>
+<center>
+    <button btn-check class="btn btn-info bg-btn pe-5 ps-5 text-light" type="button" value="in" style="font-weight: 600;">
+        CHECK-IN
+    </button>
+</center>
+{% endif %}
+
+{% if request.user.sheet_set.last.date == date and not request.user.sheet_set.last.checkout %}
+<h1 style="text-align: center; font-weight: 400;">
+    CẢM ƠN SỰ CỐNG HIẾN CỦA
+    <em style="text-transform: uppercase; color: #0099D6;">
+        {{ request.user.first_name }} {{ request.user.last_name }}
+    </em>
+    NGÀY HÔM NAY
+</h1>
+<div style="text-align: center; font-weight: 700;">Check-out để kết thúc ngày làm việc nhé</div>
+<br>
+<center>
+    <button btn-check class="btn btn-info bg-btn pe-5 ps-5 text-light" type="button" value="out" style="font-weight: 600;">CHECK-OUT</button>
+</center>
+{% endif %}
+
+{% if request.user.sheet_set.last.date == date and request.user.sheet_set.last.checkout %}
+<h1 style="text-align: center; font-weight: 400;">
+    CẢM ƠN SỰ CỐNG HIẾN CỦA
+    <em style="text-transform: uppercase; color: #0099D6;">
+        {{ request.user.first_name }} {{ request.user.last_name }}
+    </em>
+    NGÀY HÔM NAY
+</h1>
+<div style="text-align: center; font-weight: 700;">Bạn đã hết thời gian làm việc rồi nhé</div>
+{% endif %}
+<div class="clock mt-1" style="text-align: center; font-weight: 700;">00:00:00</div>
+
+<form method="POST">
+    {% csrf_token %}
+    <input hidden name="check" value="">
+</form>
+
+{% load static %}
+<script src="{% static 'scripts/time_keeping.js' %}"></script>
+
+
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Bảng chấm công của {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+<br>
+
+<table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
+    <tr>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày làm</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Vào ca</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Hết ca</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Tình trạng</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Giờ làm</th>
+      <!-- <th scope="col" class="text-center" style="vertical-align: middle;">Lương</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for sheet in sheets %}
+    <tr style="transition: background-color 0.3s;">
+      <td class="text-center align-middle border-cell">{{ sheet.date|date:"d/m/Y" }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.checkin|date:"H:i" }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.checkout|date:"H:i" }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.status }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.work_hour }}</td>
+      <!-- <td class="text-center align-middle border-cell">{{ sheet.salary }} VNĐ</td> -->
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+
+<h3 style="text-align: center; color: #D35400;">Thống kê</h3>
+<div class="row justify-content-center" style="font-size: 18px;">
+  <div class="col-5 text-end" style="color: #2980B9;">
+    <div class="mb-2">Đi làm trễ:</div>
+    <div class="mb-2">Tổng giờ làm:</div>
+    <!-- <div class="mb-2">Tổng tiền lương:</div> -->
+  </div>
+  <div class="col-5 text-start">
+    <div class="mb-2" style="color: #34495E;">{{ sheets.count_late }} buổi</div>
+    <div class="mb-2" style="color: #34495E;">{{ sheets.total_hour|floatformat:2 }} giờ</div>
+    <!-- <div class="mb-2" style="color: #34495E;">{{ sheets.total_salary|floatformat:2 }} VNĐ</div> -->
+  </div>
+</div>
+
+<style>
+  /* Màu nền cam nhạt và hiệu ứng hover cho bảng */
+  .table-bordered tbody tr:nth-child(odd) {
+    background-color: #FFF3E0;
+  }
+
+  .table-bordered tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #FFE0B2;
+  }
+
+  /* Header bảng màu cam đậm */
+  .bg-tab {
+    background-color: #E67E22 !important;
+    color: white !important;
+  }
+
+  /* Border toàn khung và các ô của bảng */
+  .custom-border {
+    border: 3px solid #E67E22; /* Border ngoài màu cam đậm */
+    border-radius: 10px;
+  }
+
+  .border-cell {
+    border: 1px solid #E67E22;
+  }
+    /* Border hàng cuối cùng */
+  .table-bordered tbody tr:last-child {
+    border-bottom: 2px solid #E67E22;
+  }
+</style>
+
+{% endblock %}

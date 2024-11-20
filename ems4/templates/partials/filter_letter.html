@@ -1,0 +1,33 @@
+<div class="col-12 d-flex justify-content-end">
+  <form action="" class="col-8 d-flex gap-2 justify-content-end">
+    <div>
+      <label for="select-time">Thời gian</label><br>
+      <select id="select-time" name="time" class="form-select" style="cursor: pointer;">
+        <option {% if not time %} selected {% endif %} value="">Tất Cả</option>
+        <option {% if time == "Hôm nay" %} selected {% endif %}>Hôm nay</option>
+        <option {% if time == "3 ngày qua" %} selected {% endif %}>3 ngày qua</option>
+        <option {% if time == "7 ngày qua" %} selected {% endif %}>7 ngày qua</option>
+        <option {% if time == "14 ngày qua" %} selected {% endif %}>14 ngày qua</option>
+        <option {% if time == "30 ngày qua" %} selected {% endif %}>30 ngày qua</option>
+      </select>
+    </div>
+    <div>
+      <label for="select-topic">Chủ đề</label><br>
+      <select id="select-topic" name="topic" class="form-select" style="cursor: pointer;">
+        <option {% if not topic_rq %} selected {% endif %} value="">Tất Cả</option>
+        {% for topic in topics %}
+        <option {% if topic_rq == topic.name %} selected {% endif %}>{{ topic }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="select-status">Trạng thái</label><br>
+      <select id="select-status" name="status" class="form-select" style="cursor: pointer;" aria-label="Default select example">
+        <option {% if not status %} selected {% endif %} value="">Tất Cả</option>
+        <option {% if status == 'Đang xử lý' %} selected {% endif %}>Đang xử lý</option>
+        <option {% if status == 'Đã xử lý' %} selected {% endif %}>Đã xử lý</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-info bg-filter mt-4">Lọc</button>
+  </form>
+</div>

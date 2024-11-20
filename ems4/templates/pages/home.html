@@ -37,6 +37,12 @@
       </div>
       <div style="font-weight: 700;">BẢNG LƯƠNG</div>
     </a>
+    <a href="/management/dayoff/" class="col d-flex items-center text-dark" style="flex-direction: column; text-decoration: none;">
+      <div class="circle bg-light d-flex items-center justify-content-center">
+        <i class="fa-solid fa-file-invoice-dollar" style="font-size: 35px;"></i>
+      </div>
+      <div style="font-weight: 700;">ĐƠN NGHỈ</div>
+    </a>
     {% endif %}
     {% if request.user.is_authenticated and not request.user.is_superuser %}
     <a href="/time-keeping/" class="col d-flex items-center text-dark" style="flex-direction: column; text-decoration: none;">
@@ -50,6 +56,12 @@
         <i class="fa-solid fa-table-list" style="font-size: 35px;"></i>
       </div>
       <div style="font-weight: 700;">BẢNG CÔNG</div>
+    </a>
+    <a href="/request-day-off/{{ request.user.username }}/" class="col d-flex items-center text-dark" style="flex-direction: column; text-decoration: none;">
+      <div class="circle bg-light d-flex items-center justify-content-center">
+        <i class="fa-solid fa-table-list" style="font-size: 35px;"></i>
+      </div>
+      <div style="font-weight: 700;">XIN NGHỈ</div>
     </a>
     {% endif %}
     <a href="profile/{{ request.user.username }}/" class="col d-flex items-center text-dark" style="flex-direction: column; text-decoration: none;">

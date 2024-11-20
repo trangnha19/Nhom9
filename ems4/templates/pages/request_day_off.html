@@ -1,0 +1,88 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<br>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Yêu cầu nghỉ phép</h1>
+<br>
+
+<!-- Form Section -->
+<div class="container p-4" style="background-color: #FFF3E0; border: 2px solid #E67E22; border-radius: 10px;">
+  <h2 style="font-size: 1.5rem; color: #D35400;">Gửi yêu cầu</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="start_date" class="form-label" style="color: #D35400;">Ngày bắt đầu:</label>
+      <input type="date" id="start_date" name="start_date" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="end_date" class="form-label" style="color: #D35400;">Ngày kết thúc:</label>
+      <input type="date" id="end_date" name="end_date" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="reason" class="form-label" style="color: #D35400;">Lý do:</label>
+      <textarea id="reason" name="reason" class="form-control" rows="4" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary" style="background-color: #E67E22; border-color: #E67E22;">Gửi yêu cầu</button>
+  </form>
+</div>
+<br>
+
+<!-- Submitted Requests Section -->
+<h2 style="text-align: center; font-size: 1.5rem; font-weight: bold; color: #D35400;">Danh sách yêu cầu đã gửi</h2>
+<br>
+
+<table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
+    <tr>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày bắt đầu</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày kết thúc</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Lý do</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Trạng thái</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for request in day_off_requests %}
+    <tr class="table-row" style="transition: background-color 0.3s;">
+      <td class="text-center align-middle border-cell">{{ request.start_date|date:"d/m/Y" }}</td>
+      <td class="text-center align-middle border-cell">{{ request.end_date|date:"d/m/Y" }}</td>
+      <td class="align-middle border-cell">{{ request.reason }}</td>
+      <td class="text-center align-middle border-cell">
+        {% if request.status == 'approved' %}
+        <span style="color: green; font-weight: bold;">Đã duyệt</span>
+        {% elif request.status == 'pending' %}
+        <span style="color: orange; font-weight: bold;">Đang chờ</span>
+        {% else %}
+        <span style="color: red; font-weight: bold;">Bị từ chối</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+
+<style>
+  /* Style rules from your original template */
+  .table-bordered tbody tr:nth-child(odd) {
+    background-color: #FFF3E0;
+  }
+  .table-bordered tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+  .table-hover tbody tr:hover {
+    background-color: #FFE0B2;
+  }
+  .bg-tab {
+    background-color: #E67E22 !important;
+    color: white !important;
+  }
+  .custom-border {
+    border: 2px solid #E67E22;
+    border-radius: 10px;
+  }
+  .border-cell {
+    border: 1px solid #E67E22;
+  }
+</style>
+
+{% endblock %}

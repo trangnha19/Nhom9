@@ -1,0 +1,106 @@
+{% extends '../layouts/base.html' %}
+
+{% block main %}
+<h1>{{ title }}</h1>
+
+<table class="table table-bordered custom-border">
+  <thead class="bg-tab">
+    <tr>
+      <th scope="col" class="text-center" style="vertical-align: middle;">User</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày bắt đầu</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày kết thúc</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Lý do</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Trạng thái</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Duyệt</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for request in requests %}
+      <tr class="table-row">
+        <td class="text-center align-middle border-cell">{{ request.user.username }}</td>
+        <td class="text-center align-middle border-cell">{{ request.start_date|date:"d/m/Y" }}</td>
+        <td class="text-center align-middle border-cell">{{ request.end_date|date:"d/m/Y" }}</td>
+        <td class="align-middle border-cell">{{ request.reason }}</td>
+        <td class="text-center align-middle border-cell">
+          {% if request.status == 'approved' %}
+          <span style="color: green; font-weight: bold;">Đã duyệt</span>
+          {% elif request.status == 'pending' %}
+          <span style="color: orange; font-weight: bold;">Đang chờ</span>
+          {% else %}
+          <span style="color: red; font-weight: bold;">Bị từ chối</span>
+          {% endif %}
+        </td>
+        <td class="border-cell">
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="request_id" value="{{ request.id }}">
+            <select name="status">
+              <option value="approved">Duyệt</option>
+              <option value="rejected">Từ Chối</option>
+            </select>
+            <button type="submit">Cập nhật</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<style>
+  /* Style rules for table */
+  .table-bordered tbody tr:nth-child(odd) {
+    background-color: #FFF3E0;
+  }
+
+  .table-bordered tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #FFE0B2;
+  }
+
+  .bg-tab {
+    background-color: #E67E22 !important;
+    color: white !important;
+  }
+
+  .custom-border {
+    border: 2px solid #E67E22;
+    border-radius: 10px;
+  }
+
+  .border-cell {
+    border: 1px solid #E67E22;
+  }
+
+  /* Style for form textarea and button */
+  textarea {
+    width: 100%;
+    height: 80px;
+    border-radius: 5px;
+    padding: 5px;
+  }
+
+  button {
+    background-color: #E67E22;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #D35400;
+  }
+
+  /* Style for form select */
+  select {
+    border-radius: 5px;
+    padding: 5px;
+    width: 150px;
+  }
+</style>
+
+{% endblock %}

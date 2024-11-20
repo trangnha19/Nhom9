@@ -10,5 +10,6 @@ urlpatterns = [
     path('sheet/<str:username>/', views.sheet, name='sheet'),
     path('profile/<str:username>/', views.profile_detail, name='profile-detail'),
     path('letters/', views.letters, name='letters'),
-    path('letters/<int:idletter>/', views.letter_detail, name='letter-detail')
+    path('letters/<int:idletter>/', views.letter_detail, name='letter-detail'),
+    path('request-day-off/<str:username>/', views.request_day_off, name='request-day-off'),
 ]

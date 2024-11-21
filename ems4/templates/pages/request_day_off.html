@@ -8,7 +8,7 @@
 <!-- Form Section -->
 <div class="container p-4" style="background-color: #FFF3E0; border: 2px solid #E67E22; border-radius: 10px;">
   <h2 style="font-size: 1.5rem; color: #D35400;">Gửi yêu cầu</h2>
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="mb-3">
       <label for="start_date" class="form-label" style="color: #D35400;">Ngày bắt đầu:</label>
@@ -22,6 +22,11 @@
       <label for="reason" class="form-label" style="color: #D35400;">Lý do:</label>
       <textarea id="reason" name="reason" class="form-control" rows="4" required></textarea>
     </div>
+    <div class="mb-3">
+      <label for="image" class="form-label" style="color: #D35400;">Tải lên hình ảnh:</label>
+      <input type="file" id="image" name="image" class="form-control" accept="image/*">
+    </div>
+    
     <button type="submit" class="btn btn-primary" style="background-color: #E67E22; border-color: #E67E22;">Gửi yêu cầu</button>
   </form>
 </div>
@@ -38,6 +43,7 @@
       <th scope="col" class="text-center" style="vertical-align: middle;">Ngày kết thúc</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Lý do</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Trạng thái</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Minh chứng</th>
     </tr>
   </thead>
   <tbody>
@@ -53,6 +59,17 @@
         <span style="color: orange; font-weight: bold;">Đang chờ</span>
         {% else %}
         <span style="color: red; font-weight: bold;">Bị từ chối</span>
+        {% endif %}
+      </td>
+      <td class="text-center align-middle border-cell">
+        {% if request.image %}
+        <a href="{{ request.image.url }}" target="_blank" style="text-decoration: none;">
+          <button class="btn btn-secondary" style="background-color: #E67E22; border-color: #E67E22; color: white;">
+            Xem ảnh
+          </button>
+        </a>
+        {% else %}
+        <span>Không có hình ảnh</span>
         {% endif %}
       </td>
     </tr>

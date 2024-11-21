@@ -10,8 +10,8 @@
   <thead class="bg-tab text-white" style="background-color: #E67E22;">
     <tr>
       <th scope="col" class="text-center" style="vertical-align: middle;">Ngày</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Họ tên</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Tài khoản</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Họ tên</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Vào ca</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Ra ca</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Tình trạng</th>
@@ -23,12 +23,12 @@
     {% for sheet in page_obj %}
     <tr class="table-row" style="transition: background-color 0.3s;">
       <td class="text-center align-middle border-cell">{{ sheet.date|date:"d/m/Y" }}</td>
+      <td class="text-center align-middle border-cell">{{ sheet.user.username }}</td>
       <td class="align-middle border-cell">
         <a href="/profile/{{sheet.user.username}}/" class="link-highlight">
           {{ sheet.user.first_name }} {{ sheet.user.last_name }}
         </a>
       </td>
-      <td class="text-center align-middle border-cell">{{ sheet.user.username }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.checkin|date:"H:i" }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.checkout|date:"H:i" }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.status }}</td>

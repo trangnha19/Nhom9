@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.db.models import Count, Case, When, F, Sum
+from django.db.models import Count, Case, When, F, Sum, ExpressionWrapper, fields
 from django.contrib import messages
 from datetime import datetime, timedelta
 from myapp.models import *
@@ -138,7 +138,7 @@ def main_sheet(request):
       sheets = sheets.filter(date__range=[start_date, datetime.now().date()])
     elif end_date:
       sheets = sheets.filter(date__range=[datetime.now().date(), end_date])
-    paginator = Paginator(sheets, 5)
+    paginator = Paginator(sheets, 6)
     page_number = request.GET.get('page', '')
     try:
       page_obj = paginator.get_page(page_number)
@@ -171,6 +171,16 @@ def total_salary(request):
     
     # The number of days in the month
     num_days_in_month = 26
+    
+    approved_dayoff_requests = DayOffRequest.objects.filter(
+    status='approved',  # Only approved requests
+    start_date__year=year_req  # Filter for the specific year
+    ).annotate(
+        days_off=ExpressionWrapper(
+            (F('end_date') - F('start_date')) + 1,  # Add 1 to include the start_date
+            output_field=fields.IntegerField()  # Specify the output type
+        )
+    )
         
 # Run the query
     sheets = Sheet.objects.filter(
@@ -183,40 +193,69 @@ def total_salary(request):
         early_count=Count(Case(When(status='Về Sớm', then=1))),
         total_late_early_count=F('late_count') + F('early_count'),
         ot_sum=Sum('ot'),
+        late_time=Sum('late_time'),
         days_worked=Count('date', distinct=True)  # Count distinct days worked
     ).order_by('user__username')
 
     # Calculate missing days and real_salary after the query
     for sheet in sheets:
+      # Fetch total approved day-off requests up to the previous month (count of requests)
+      previous_approved_days_off = approved_dayoff_requests.filter(
+      user__username=sheet['user__username'],
+      start_date__month__lt=month_req
+      ).aggregate(total_requests=Count('id'))['total_requests'] or 0
+
+      # Fetch approved day-off requests for the current month (count of requests)
+      current_month_requests = approved_dayoff_requests.filter(
+      user__username=sheet['user__username'],
+      start_date__month=month_req
+      )
+      approved_days_off_current_month = current_month_requests.aggregate(total_requests=Count('id'))['total_requests'] or 0
+
+      # Adjust approved days off for the current month if the yearly limit exceeds 12
+      if previous_approved_days_off + approved_days_off_current_month > 12:
+          approved_days_off_current_month = max(0, 12 - previous_approved_days_off)
+
+      # Store the approved days off
+      sheet['prev_approved_days_off'] = previous_approved_days_off
+      sheet['approved_days_off'] = approved_days_off_current_month
+
+      # Calculate attendance days, missing days, etc.
       sheet['missing_days'] = max(0, num_days_in_month - sheet['days_worked'])
-      sheet['att_day'] = 26 - sheet['missing_days']
-      # Calculate early_time: number of days with early exit (before 6 PM)
-      early_time = max(0, sheet['total_late_early_count'] - 2)
-      
-      # Calculate total_work_day: You can use `days_worked` for this
+      sheet['att_day'] = 26 - sheet['missing_days'] + approved_days_off_current_month
+
+      # Calculate penalties and bonuses
+      sheet['ot_sal'] = Decimal(100000) * Decimal(sheet['ot_sum'])
+      sheet['awrd'] = Decimal(1000000) if sheet['ot_sum'] > 15 else Decimal(2000000) if sheet['ot_sum'] > 20 else 0
+      sheet['neg_sal'] = Decimal(100000) * Decimal(sheet['late_time'])
       total_work_day = sheet['days_worked']
-      sheet['ot_sal'] = (Decimal(100000) * sheet['ot_sum'])
-      sheet['neg_sal'] = (Decimal(50000) * Decimal(early_time))
-      # Calculate real_salary based on the formula provided
-      real_salary = int(sheet['total_salary'] / Decimal(26) * Decimal(total_work_day)) - sheet['neg_sal'] + sheet['ot_sal']
+      real_salary = (
+          int(sheet['total_salary'] / Decimal(26) * Decimal(total_work_day))
+          - sheet['neg_sal']
+          + sheet['ot_sal']
+      )
       sheet['real_salary'] = int(sheet['total_salary'] / 26)
       
-      if sheet['missing_days'] == 0 and sheet['total_late_early_count'] == 0:
-        sheet['awrd'] = 500000
-      else:
-        sheet['awrd'] = 0
-      
-      # Calculate bhxh and tncn using Decimal
-      bhxh = int(real_salary * Decimal(10.5) / Decimal(100))
-      sheet['bhxh'] = bhxh
-      
-      tncn = int(real_salary * Decimal(5) / Decimal(100))
-      sheet['tncn'] = tncn
-      
-      real_sal = real_salary - bhxh - tncn + sheet['awrd']
-      sheet['real_sal'] = real_sal
+      # if sheet['missing_days'] == 0 and sheet['total_late_early_count'] == 0:
+      #     sheet['awrd'] = 500000
+      # else:
+      #     sheet['awrd'] = 0
 
-        
+      # Khởi tạo giá trị mặc định
+      bhxh = 0
+      tncn = 0
+
+      # Calculate deductions (BHXH and TNCN)
+      if total_work_day > 12:
+          bhxh = int(sheet['total_salary'] * Decimal(10.5) / Decimal(100))
+          tncn = int(sheet['total_salary'] * Decimal(5) / Decimal(100))
+
+      sheet['bhxh'] = bhxh
+      sheet['tncn'] = tncn
+
+      # Calculate the final real salary
+      real_sal = real_salary - bhxh - tncn + sheet['awrd'] + sheet['ot_sal']
+      sheet['real_sal'] = real_sal
           
     # Filter by keyword if provided
     keyword = request.GET.get('keyword', '')

@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sheet',
             name='status',
-            field=models.CharField(choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn'), ('Về Sớm', 'Về Sớm'), ('Đến Muộn, Về Sớm', 'Đến Muộn, Về Sớm')], default='Đúng Giờ', max_length=20),
+            field=models.CharField(choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn')], default='Đúng Giờ', max_length=20),
         ),
     ]

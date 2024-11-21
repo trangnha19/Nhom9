@@ -1,8 +1,8 @@
 {% extends '../layouts/base.html' %}
 
 {% block main %}
+<br>
 <h1>{{ title }}</h1>
-
 <table class="table table-bordered custom-border">
   <thead class="bg-tab">
     <tr>
@@ -10,6 +10,7 @@
       <th scope="col" class="text-center" style="vertical-align: middle;">Ngày bắt đầu</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Ngày kết thúc</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Lý do</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">Minh chứng</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Trạng thái</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Duyệt</th>
     </tr>
@@ -21,6 +22,17 @@
         <td class="text-center align-middle border-cell">{{ request.start_date|date:"d/m/Y" }}</td>
         <td class="text-center align-middle border-cell">{{ request.end_date|date:"d/m/Y" }}</td>
         <td class="align-middle border-cell">{{ request.reason }}</td>
+        <td class="text-center align-middle border-cell">
+          {% if request.image %}
+          <a href="{{ request.image.url }}" target="_blank" style="text-decoration: none;">
+            <button class="btn btn-secondary" style="background-color: #E67E22; border-color: #E67E22; color: white;">
+              Xem ảnh
+            </button>
+          </a>
+          {% else %}
+          <span>Không có hình ảnh</span>
+          {% endif %}
+        </td>
         <td class="text-center align-middle border-cell">
           {% if request.status == 'approved' %}
           <span style="color: green; font-weight: bold;">Đã duyệt</span>

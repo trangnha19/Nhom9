@@ -21,7 +21,6 @@ class Migration(migrations.Migration):
                 choices=[
                     ("Đúng Giờ", "Đúng Giờ"),
                     ("Đến Muộn", "Đến Muộn"),
-                    ("Về Sớm", "Về Sớm"),
                 ],
                 default="Đúng Giờ",
                 max_length=20,

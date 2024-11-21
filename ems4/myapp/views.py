@@ -187,6 +187,7 @@ def request_day_off(request, username):
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
         reason = request.POST['reason']
+        image = request.FILES.get('image')
 
         # Save the new day-off request
         DayOffRequest.objects.create(
@@ -194,6 +195,7 @@ def request_day_off(request, username):
             start_date=start_date,
             end_date=end_date,
             reason=reason,
+            image=image,
             status='pending'  # Default status
         )
         # Redirect to the same page with the username

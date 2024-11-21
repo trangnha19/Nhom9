@@ -1,5 +1,5 @@
 from datetime import time, timedelta
-from datetime import datetime, time
+from datetime import time, datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -84,23 +84,29 @@ class Sheet(models.Model):
     checkout=models.TimeField(blank=True, null=True)
     work_hour=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     salary=models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
-    status=models.CharField(max_length=20, choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn'), ('Về Sớm', 'Về Sớm'), ('Đến Muộn, Về Sớm', 'Đến Muộn, Về Sớm')], default='Đúng Giờ')
+    status=models.CharField(max_length=20, choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn')], default='Đúng Giờ')
     ot = models.IntegerField(null=True, blank=True, default=1)
+    late_time = models.IntegerField(null=True, blank=True, default=0)  # Add late_time field
 
     def __str__(self):
         return f'{self.user.username} - {self.date}'
 
 
     def update_status(self):
-        # Check if the user is late (after 8 AM) or leaves early (before 6 PM)
-        if self.checkin and self.checkout:  # Đảm bảo cả checkin và checkout đều có giá trị
-            if self.checkin > time(8, 0, 0) and self.checkout < time(17, 0, 0):
-                self.status = 'Đến Muộn, Về Sớm'
-            elif self.checkin > time(8, 0, 0):
+        # Standard check-in time (8:00 AM)
+        standard_checkin = time(8, 0, 0)
+
+        # Calculate late time in minutes
+        if self.checkin:  # Ensure check-in time is set
+            checkin_datetime = datetime.combine(self.date, self.checkin)
+            standard_datetime = datetime.combine(self.date, standard_checkin)
+
+            if self.checkin > standard_checkin:
+                late_delta = checkin_datetime - standard_datetime
+                self.late_time = late_delta.seconds // 3600  # Convert seconds to minutes
                 self.status = 'Đến Muộn'
-            elif self.checkout < time(17, 0, 0):
-                self.status = 'Về Sớm'
             else:
+                self.late_time = 0
                 self.status = 'Đúng Giờ'
 
         # Calculate overtime (OT) if checkout time is after 6 PM
@@ -128,6 +134,7 @@ class DayOffRequest(models.Model):
     end_date = models.DateField()
     reason = models.TextField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.start_date} to {self.end_date}"

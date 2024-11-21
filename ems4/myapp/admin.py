@@ -27,6 +27,7 @@ class TopicLetterAdmin(admin.ModelAdmin):
   model = TopicLetter
   inlines = [LetterInline]
 
+
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
@@ -35,3 +36,4 @@ admin.site.register(Department, DepartmentAdmin)
 admin.site.register(TopicLetter, TopicLetterAdmin)
 
 admin.site.register(Sheet)
+admin.site.register(DayOffRequest)

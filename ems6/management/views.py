@@ -190,8 +190,7 @@ def total_salary(request):
         total_work_hour=Sum('work_hour'),
         total_salary=F('user__profile__salary'),
         late_count=Count(Case(When(status='Đến Muộn', then=1))),
-        early_count=Count(Case(When(status='Về Sớm', then=1))),
-        total_late_early_count=F('late_count') + F('early_count'),
+        total_late_early_count=F('late_count'),
         ot_sum=Sum('ot'),
         late_time=Sum('late_time'),
         days_worked=Count('date', distinct=True)  # Count distinct days worked
@@ -230,7 +229,7 @@ def total_salary(request):
       sheet['neg_sal'] = Decimal(100000) * Decimal(sheet['late_time'])
       total_work_day = sheet['days_worked']
       real_salary = (
-          int(sheet['total_salary'] / Decimal(26) * Decimal(total_work_day))
+          int(sheet['total_salary'] / Decimal(26) * sheet['att_day'])
           - sheet['neg_sal']
           + sheet['ot_sal']
       )
@@ -275,7 +274,7 @@ def total_salary(request):
   else:
     messages.warning(request, 'Không có quyền truy cập')
     return redirect('/')
-  
+
 def letter(request):
   if request.user.is_authenticated:
     title = 'Danh sách đóng góp ý kiến'

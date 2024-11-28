@@ -71,7 +71,7 @@ def profile_detail(request, username):
                         'departments': departments}
                 return render(request, 'pages/profile_detail.html', context)
             else:
-                messages.warning(request, 'Vào của mày mà xem')
+                messages.warning(request, 'Vào tài khoản của bản thân để xem')
                 return redirect('profile-detail', username=request.user.username)
         else:
             messages.error(request, 'Không tìm thấy người dùng này')

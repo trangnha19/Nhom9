@@ -4,24 +4,24 @@ from django.contrib import messages
 from datetime import datetime, timedelta
 from myapp.models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.utils import timezone
 from decimal import Decimal
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-
 
 # Create your views here.
 def home(request):
   if request.user.is_superuser:
+    # for profile in Profile.objects.all():
+    #   profile.save()
     title = 'Dashboard'
     count_emp = User.objects.count()
     count_emp_male = User.objects.filter(profile__gender='Nam').count()
     count_emp_female = User.objects.filter(profile__gender='Nữ').count()
     today = timezone.now().date()
-    count_late = Sheet.objects.filter(date=today, status='Muộn').exclude(checkin=None).count()
+    count_late = Sheet.objects.filter(date=today, status='Đến Muộn').exclude(checkin=None).count()
     count_ontime = Sheet.objects.filter(date=today, status='Đúng Giờ').exclude(checkin=None).count()
     count_manage = User.objects.filter(profile__position__name='Trưởng phòng').count()
     count_employee = User.objects.filter(profile__position__name='Nhân viên').count()
+    count_leave_tody = DayOffRequest.objects.filter(start_date__lte=datetime.now().date(), end_date__gte=datetime.now().date(), status='approved').count()
+    count_dpm = Department.objects.count()
     count_it = User.objects.filter(profile__position__department__name='IT').count()
     count_nhansu = User.objects.filter(profile__position__department__name='Nhân sự').count()
     count_kinhdoanh = User.objects.filter(profile__position__department__name='Kinh doanh').count()
@@ -29,7 +29,6 @@ def home(request):
     count_thietke = User.objects.filter(profile__position__department__name='Thiết kế').count()
     count_sanxuat = User.objects.filter(profile__position__department__name='Sản xuất').count()
     count_mkt = User.objects.filter(profile__position__department__name='Marketing').count()
-    count_dpm = Department.objects.count()
     context = {'title': title,
                'today': today,
                'count_late': count_late,
@@ -39,20 +38,19 @@ def home(request):
                'count_emp': count_emp,
                'count_emp_male': count_emp_male,
                'count_emp_female': count_emp_female,
+               'count_leave_today': count_leave_tody,
+               'count_dpm': count_dpm,
                'count_it': count_it,
                'count_nhansu': count_nhansu,
                'count_kinhdoanh': count_kinhdoanh,
                'count_thietke': count_thietke,
                'count_taichinh': count_taichinh,
                'count_sanxuat': count_sanxuat,
-               'count_mkt': count_mkt,
-               'count_dpm': count_dpm}
+               'count_mkt': count_mkt}
     return render(request, 'pages/management.html', context)
   else:
     messages.warning(request, 'Không có quyền truy cập')
     return redirect('/')
-
-
 
 def employee(request):
     if request.user.is_superuser:
@@ -69,7 +67,7 @@ def employee(request):
             emp.save()
             messages.success(request, f"Trạng thái của nhân viên đã được cập nhật thành {dict(Profile.STATUS_CHOICES).get(status)}")
             # Redirect lại trang hiện tại
-            return HttpResponseRedirect(reverse('employee'))  # Đảm bảo tên route 'employee' là đúng
+            return redirect('employee')  # Đảm bảo tên route 'employee' là đúng
 
         # Bộ lọc và phân trang
         keyword = request.GET.get('keyword', '')
@@ -90,7 +88,7 @@ def employee(request):
         elif end_date:
             emps = emps.filter(profile__start_date__lte=end_date)
 
-        paginator = Paginator(emps, 5)
+        paginator = Paginator(emps, 7)
         page_number = request.GET.get('page', '')
         try:
             page_obj = paginator.get_page(page_number)
@@ -319,18 +317,47 @@ def letter(request):
 
 def admin_review_requests(request):
     title = 'Đơn nghỉ phép'
-    requests = DayOffRequest.objects.all().order_by('-start_date')
-
-    if request.method == 'POST':
-        request_id = request.POST.get('request_id')
-        status = request.POST.get('status')
-        admin_comment = request.POST.get('admin_comment', '')
-
-        day_off_request = DayOffRequest.objects.get(id=request_id)
-        day_off_request.status = status
-        day_off_request.admin_comment = admin_comment
+    requests = DayOffRequest.objects.order_by('-start_date')    
+    status = request.GET.get('status', '')
+    start_date = request.GET.get('start-date', '')
+    end_date = request.GET.get('end-date', '')
+    if status:
+      if status == 'Đang chờ':
+        requests = requests.filter(status='pending')
+      elif status == 'Đã duyệt':
+        requests = requests.filter(status='approved')
+      else:
+        requests = requests.filter(status='rejected')
+    if start_date and end_date:
+      requests = requests.filter(start_date__range=[start_date, end_date])
+    elif start_date:
+      requests = requests.filter(start_date__range=[start_date, datetime.now().date()])
+    elif end_date:
+      requests = requests.filter(start_date__range=[datetime.now().date(), end_date])
+ 
+    paginator = Paginator(requests, 10)
+    page_number = request.GET.get('page', '')
+    try:
+      page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+      page_obj = paginator.page(1)
+    except EmptyPage:
+      page_obj = paginator.page(paginator.num_pages)
+    query_params = request.GET.copy()
+    if 'page' in query_params:
+      query_params.pop('page')
+    if request.POST:
+        accept = request.POST.get('accept', '')
+        refuse = request.POST.get('refuse', '')
+        day_off_request = DayOffRequest.objects.get(id=accept if accept else refuse)
+        day_off_request.status = 'approved' if accept else 'rejected'
         day_off_request.save()
-        # messages.success(request, 'The request has been updated.')
-
-    context = {'title': title, 'requests': requests}
+        messages.success(request, 'Đã duyệt yêu cầu' if accept else 'Đã từ chối yêu cầu')
+        return redirect('dayoff')
+    context = {'title': title, 
+               'start_date': start_date,
+               'end_date': end_date,
+               'status': status,
+               'page_obj': page_obj, 
+               'query_params': query_params.urlencode()}
     return render(request, 'pages/admin_review_requests.html', context)

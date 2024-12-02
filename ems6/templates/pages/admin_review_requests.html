@@ -1,118 +1,67 @@
 {% extends '../layouts/base.html' %}
+{% load static %}
 
 {% block main %}
+<link rel="stylesheet" href="{% static 'styles/table.css' %}">
+
 <br>
-<h1>{{ title }}</h1>
-<table class="table table-bordered custom-border">
-  <thead class="bg-tab">
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Các yêu cầu nghỉ phép</h1>
+{% include 'partials/filter_dayoff.html' %}
+<br>
+<table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
     <tr>
-      <th scope="col" class="text-center" style="vertical-align: middle;">User</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày bắt đầu</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Ngày kết thúc</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Lý do</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Minh chứng</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Trạng thái</th>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Duyệt</th>
+      <th scope="col" class="text-center" >Họ tên</th>
+      <th scope="col" class="text-center" >Ngày bắt đầu</th>
+      <th scope="col" class="text-center" >Ngày kết thúc</th>
+      <th scope="col" class="text-center" >Lý do</th>
+      <th scope="col" class="text-center" >Minh chứng</th>
+      <th scope="col" class="text-center" >Trạng thái</th>
+      <th scope="col" class="text-center" >Duyệt</th>
     </tr>
   </thead>
   <tbody>
-    {% for request in requests %}
+    {% for rq in page_obj %}
       <tr class="table-row">
-        <td class="text-center align-middle border-cell">{{ request.user.username }}</td>
-        <td class="text-center align-middle border-cell">{{ request.start_date|date:"d/m/Y" }}</td>
-        <td class="text-center align-middle border-cell">{{ request.end_date|date:"d/m/Y" }}</td>
-        <td class="align-middle border-cell">{{ request.reason }}</td>
+        <td class="text-center align-middle border-cell">{{ rq.user.first_name }} {{ rq.user.last_name }}</td>
+        <td class="text-center align-middle border-cell">{{ rq.start_date|date:"d/m/Y" }}</td>
+        <td class="text-center align-middle border-cell">{{ rq.end_date|date:"d/m/Y" }}</td>
+        <td class="align-middle border-cell">{{ rq.reason }}</td>
         <td class="text-center align-middle border-cell">
-          {% if request.image %}
-          <a href="{{ request.image.url }}" target="_blank" style="text-decoration: none;">
+          {% if rq.image %}
+          <a href="{{ rq.image.url }}" target="_blank" style="text-decoration: none;">
             <button class="btn btn-secondary" style="background-color: #E67E22; border-color: #E67E22; color: white;">
               Xem ảnh
             </button>
           </a>
           {% else %}
-          <span>Không có hình ảnh</span>
+          <span>Không có</span>
           {% endif %}
         </td>
         <td class="text-center align-middle border-cell">
-          {% if request.status == 'approved' %}
+          {% if rq.status == 'approved' %}
           <span style="color: green; font-weight: bold;">Đã duyệt</span>
-          {% elif request.status == 'pending' %}
+          {% elif rq.status == 'pending' %}
           <span style="color: orange; font-weight: bold;">Đang chờ</span>
           {% else %}
-          <span style="color: red; font-weight: bold;">Bị từ chối</span>
+          <span style="color: red; font-weight: bold;">Từ chối</span>
           {% endif %}
         </td>
         <td class="border-cell">
+          {% if rq.status == 'pending' %}
           <form method="post">
             {% csrf_token %}
-            <input type="hidden" name="request_id" value="{{ request.id }}">
-            <select name="status">
-              <option value="approved">Duyệt</option>
-              <option value="rejected">Từ Chối</option>
-            </select>
-            <button type="submit">Cập nhật</button>
+            <center>
+              <button class="btn bg-btn text-light" name="accept" value="{{ rq.id }}">Duyệt</button>
+              <button class="btn bg-btn-light" name="refuse" value="{{ rq.id }}">Từ chối</button>
+            </center>
           </form>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<style>
-  /* Style rules for table */
-  .table-bordered tbody tr:nth-child(odd) {
-    background-color: #FFF3E0;
-  }
-
-  .table-bordered tbody tr:nth-child(even) {
-    background-color: #FFFFFF;
-  }
-
-  .table-hover tbody tr:hover {
-    background-color: #FFE0B2;
-  }
-
-  .bg-tab {
-    background-color: #E67E22 !important;
-    color: white !important;
-  }
-
-  .custom-border {
-    border: 2px solid #E67E22;
-    border-radius: 10px;
-  }
-
-  .border-cell {
-    border: 1px solid #E67E22;
-  }
-
-  /* Style for form textarea and button */
-  textarea {
-    width: 100%;
-    height: 80px;
-    border-radius: 5px;
-    padding: 5px;
-  }
-
-  button {
-    background-color: #E67E22;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #D35400;
-  }
-
-  /* Style for form select */
-  select {
-    border-radius: 5px;
-    padding: 5px;
-    width: 150px;
-  }
-</style>
 
 {% endblock %}

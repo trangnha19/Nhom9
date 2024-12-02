@@ -50,10 +50,11 @@ class SignInForm(forms.ModelForm):
 class DayOffRequestForm(forms.ModelForm):
     class Meta:
         model = DayOffRequest
-        fields = ['start_date', 'end_date', 'reason']
+        fields = ['start_date', 'end_date', 'reason', 'image']
+        labels = {'start_date': 'Ngày bắt đầu nghỉ', 'end_date': 'Ngày kết thúc nghỉ', 'reason': 'Lý do', 'image': 'Ảnh minh chứng'}
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'reason': forms.Textarea(attrs={'rows': 4}),
-        }
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'reason': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'type': 'file', 'class': 'form-control'})}
 

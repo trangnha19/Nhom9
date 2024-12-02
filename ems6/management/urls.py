@@ -7,5 +7,5 @@ urlpatterns = [
     path('sheet/', views.main_sheet, name='main-sheet'),
     path('salary/', views.total_salary, name='total-salary'),
     path('letter/', views.letter, name='main-letter'),
-    path('dayoff/', views.admin_review_requests, name='admin_review_requests'),
+    path('dayoff/', views.admin_review_requests, name='dayoff'),
 ]

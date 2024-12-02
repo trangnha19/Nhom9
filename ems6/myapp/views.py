@@ -2,14 +2,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import *
 from .models import *
 from django.contrib.auth.models import User, auth
-from datetime import datetime
-from django.db.models import Sum
+from datetime import datetime, timedelta
+from django.db.models import Sum, Min, Max
 from django.contrib import messages
 
 # Create your views here.
 def home(request):
     if request.user.is_authenticated:
         title = 'Home'
+        for user in User.objects.all():
+            user.save()
         context = {'title': title}
         return render(request, 'pages/home.html', context)
     else:
@@ -128,15 +130,34 @@ def sheet(request, username):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         user = None
+
     if user and request.user.is_authenticated:
         if request.user.username == username:
             title = f'Bảng chấm công {username}'
+
+            # Lấy danh sách bảng chấm công của user
             sheets = Sheet.objects.filter(user=user).order_by('-date')
-            sheets.total_hour = sheets.aggregate(total_hour=Sum('work_hour'))['total_hour']
-            sheets.total_salary = sheets.aggregate(total_salary=Sum('salary'))['total_salary']
-            sheets.count_late = sheets.filter(status='Muộn').count()
-            context = {'title': title,
-                       'sheets': sheets}
+
+            # Tính tổng giờ làm việc
+            total_hour = sheets.aggregate(total_hour=Sum('work_hour'))['total_hour'] or 0
+
+            # Lấy thông tin lương từ Profile (vì salary nằm trong Profile)
+            try:
+                profile = Profile.objects.get(user=user)
+                total_salary = total_hour * profile.salary
+            except Profile.DoesNotExist:
+                total_salary = 0  # Nếu không có Profile, gán lương bằng 0
+
+            # Đếm số lần đến muộn
+            count_late = sheets.filter(status='Đến Muộn').count()
+
+            context = {
+                'title': title,
+                'sheets': sheets,
+                'total_hour': total_hour,
+                'total_salary': total_salary,
+                'count_late': count_late,
+            }
             return render(request, 'pages/sheet.html', context)
         else:
             messages.warning(request, 'Hãy vào tài khoản của mình để xem')
@@ -157,7 +178,8 @@ def letters(request):
                 letter.save()
                 messages.success(request, 'Đã gửi đóng góp')
                 return redirect('home')
-        return render(request, 'pages/letters.html', {'title': title, 'form': form, 'my_letters': my_letters})
+        context = {'title': title, 'form': form, 'my_letters': my_letters}
+        return render(request, 'pages/letters.html', context)
     else:
         return redirect('login')
 
@@ -179,28 +201,24 @@ def letter_detail(request, idletter):
 
 def request_day_off(request, username):
     try:
+        title = 'Danh sách nghỉ phép'
         user = User.objects.get(username=username)
+        day_off_requests = DayOffRequest.objects.filter(user=user).order_by('-start_date')
+        max_end_date = day_off_requests.aggregate(max_end_date=Max('end_date'))['max_end_date']
+        if max_end_date is None:
+            # Nếu không có dữ liệu, đặt giá trị mặc định
+            max_end_date = timezone.now().date()  # Hoặc một giá trị phù hợp
+        else:
+            max_end_date += timedelta(days=1)
+        form = DayOffRequestForm(request.POST or None, request.FILES or None)
+        if request.POST:
+            if form.is_valid():
+                day_off = form.save(False)
+                day_off.user = request.user
+                day_off.save()
+                messages.success(request, 'Gửi yêu cầu nghỉ thành công')
+            return redirect('request-day-off', username=username)
+        context = {'title': title,'day_off_requests': day_off_requests, 'form': form, 'max_end_date': max_end_date}
+        return render(request, 'pages/request_day_off.html', context)
     except User.DoesNotExist:
-        user = None
-
-    if request.method == 'POST':
-        start_date = request.POST['start_date']
-        end_date = request.POST['end_date']
-        reason = request.POST['reason']
-        image = request.FILES.get('image')
-
-        # Save the new day-off request
-        DayOffRequest.objects.create(
-            user=user,
-            start_date=start_date,
-            end_date=end_date,
-            reason=reason,
-            image=image,
-            status='pending'  # Default status
-        )
-        # Redirect to the same page with the username
-        return redirect('request-day-off', username=username)
-
-    # Retrieve submitted requests for the current user
-    day_off_requests = DayOffRequest.objects.filter(user=user).order_by('-start_date')
-    return render(request, 'pages/request_day_off.html', {'day_off_requests': day_off_requests})
+        return redirect('home')

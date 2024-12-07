@@ -65,7 +65,7 @@ def employee(request):
             emp = Profile.objects.get(user__id=id)
             emp.status = status
             emp.save()
-            messages.success(request, f"Trạng thái của nhân viên đã được cập nhật thành {dict(Profile.STATUS_CHOICES).get(status)}")
+            messages.success(request, f"Trạng thái của nhân viên đã được cập nhật thành công{dict(Profile.STATUS_CHOICES).get(status)}")
             # Redirect lại trang hiện tại
             return redirect('employee')  # Đảm bảo tên route 'employee' là đúng
 
@@ -232,17 +232,10 @@ def total_salary(request):
           + sheet['ot_sal']
       )
       sheet['real_salary'] = int(sheet['total_salary'] / 26)
-      
-      # if sheet['missing_days'] == 0 and sheet['total_late_early_count'] == 0:
-      #     sheet['awrd'] = 500000
-      # else:
-      #     sheet['awrd'] = 0
-
-      # Khởi tạo giá trị mặc định
-      bhxh = 0
-      tncn = 0
 
       # Calculate deductions (BHXH and TNCN)
+      bhxh = 0
+      tncn = 0
       if total_work_day > 12:
           bhxh = int(sheet['total_salary'] * Decimal(10.5) / Decimal(100))
           tncn = int(sheet['total_salary'] * Decimal(5) / Decimal(100))

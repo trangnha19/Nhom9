@@ -1,7 +1,7 @@
 {% extends '../layouts/base.html' %}
 {% block main %}
 <br>
-<h1 style="text-align:center" class="mb-3">Chỉnh sửa hồ sơ {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400; " class="mb-3">Chỉnh sửa hồ sơ {{ request.user.first_name }} {{ request.user.last_name }}</h1>
 <div class="container" style="display:flex; justify-content:center">
     <form method="POST" style="width:60%">
         {% csrf_token %}

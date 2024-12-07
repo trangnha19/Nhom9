@@ -2,7 +2,7 @@
 
 {% block main %}
 <br>
-<h1 style="text-align: center;">Hồ sơ {{ user.first_name }} {{ user.last_name }}</h1>
+<h1 style="text-align: center;color: #D35400;">Hồ sơ {{ user.first_name }} {{ user.last_name }}</h1>
 <div class="row mt-3" style="justify-content: space-between;">
   <div class="col-3">
     <div class="d-flex justify-content-center">
@@ -11,7 +11,7 @@
   </div>
   <div class="col-6" style="font-size: 18px;">
     <div class="row">
-      <div class="col-4" style="color: blue;">
+      <div class="col-4" style="color: #D35400;">
         <div class="mb-2">Mã NV:</div>
         <div class="mb-2">Họ tên:</div>
         <div class="mb-2">CCCD:</div>
@@ -21,7 +21,6 @@
         <div class="mb-2">Điện thoại:</div>
         <div class="mb-2">Nhân viên phòng:</div>
         <div class="mb-2">Chức vụ:</div>
-        <div class="mb-2">Lương cơ bản:</div>
       </div>
       <div class="col-8">
         <div class="mb-2">{{ user.id }}</div>
@@ -33,7 +32,6 @@
         <div class="mb-2">{{ user.profile.phone_number }}</div>
         <div class="mb-2">{{ user.profile.position.department.name }}</div>
         <div class="mb-2">{{ user.profile.position.name }}</div>
-        <div class="mb-2">{{ user.profile.salary }}</div>
       </div>
     </div>
   </div>
@@ -45,7 +43,7 @@
 </div>
 <br>
 <div class="row ms-4" style="font-size: 18px;">
-  <div class="col-2" style="color: blue;">
+  <div class="col-2" style="color: #D35400;">
     <div class="mb-2">Bằng cấp:</div>
     <div class="mb-2">Chuyên ngành:</div>
     <div class="mb-2">Email cá nhân:</div>

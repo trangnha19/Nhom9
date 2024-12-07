@@ -138,6 +138,19 @@ def sheet(request, username):
             # Lấy danh sách bảng chấm công của user
             sheets = Sheet.objects.filter(user=user).order_by('-date')
 
+            # Lấy tham số bộ lọc từ request
+            status = request.GET.get('status')  # Tình trạng
+            start_date = request.GET.get('start-date')  # Ngày bắt đầu
+            end_date = request.GET.get('end-date')  # Ngày kết thúc
+
+            # Áp dụng các bộ lọc
+            if status:
+                sheets = sheets.filter(status=status)
+            if start_date:
+                sheets = sheets.filter(date__gte=start_date)
+            if end_date:
+                sheets = sheets.filter(date__lte=end_date)
+
             # Tính tổng giờ làm việc
             total_hour = sheets.aggregate(total_hour=Sum('work_hour'))['total_hour'] or 0
 
@@ -169,7 +182,7 @@ def sheet(request, username):
 def letters(request):
     if request.user.is_authenticated:
         title = 'Hòm thư ý kiến'
-        my_letters = Letter.objects.filter(user=request.user)
+        my_letters = Letter.objects.filter(user=request.user).order_by('-created_at')
         form = LetterForm(request.POST or None)
         if request.POST:
             if form.is_valid():

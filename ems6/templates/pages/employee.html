@@ -2,14 +2,14 @@
 
 {% block main %}
 <br>
-<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Quản lý nhân viên</h1>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">QUẢN LÝ NHÂN VIÊN</h1>
 {% include 'partials/filter_emp.html' %}
 <br>
 
 <table class="table table-hover table-bordered custom-border" style="border-radius: 8px; overflow: hidden;">
   <thead class="bg-tab text-white" style="background-color: #E67E22;">
     <tr>
-      <th scope="col" class="text-center" style="vertical-align: middle;">Tài khoản</th>
+      <th scope="col" class="text-center" style="vertical-align: middle;">STT</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Họ tên</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Phòng</th>
       <th scope="col" class="text-center" style="vertical-align: middle;">Vị trí</th>
@@ -20,7 +20,7 @@
   <tbody>
     {% for emp in page_obj %}
     <tr style="transition: background-color 0.3s;">
-      <td class="text-center align-middle">{{ emp.username }}</td>
+      <td class="text-center align-middle">{{ forloop.counter }}</td>
       <td class="align-middle">
         <a href="/profile/{{ emp.username }}/" style="text-decoration: none; color: #E67E22; font-weight: 500;">{{ emp.first_name }} {{ emp.last_name }}</a>
       </td>

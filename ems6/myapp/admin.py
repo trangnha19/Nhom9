@@ -28,3 +28,4 @@ admin.site.register(TopicLetter, TopicLetterAdmin)
 
 admin.site.register(Sheet)
 admin.site.register(DayOffRequest)
+admin.site.register(Letter)

@@ -1,9 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from .forms import *
 from .models import *
 from django.contrib.auth.models import User, auth
 from datetime import datetime, timedelta
-from django.db.models import Sum, Min, Max
+from django.db.models import Sum, Max
 from django.contrib import messages
 
 # Create your views here.
@@ -81,29 +81,6 @@ def profile_detail(request, username):
     else:
         return redirect('home')
 
-def update_info(request, username):
-    if request.user.is_authenticated:
-        if request.user.username==username:
-            title = f'Sửa hồ sơ {username}'
-            form_user = UserForm(instance=request.user)
-            form_pr = ProfileForm(instance=request.user.profile)
-            if request.POST:
-                form_user = UserForm(request.POST, instance=request.user)
-                form_pr = ProfileForm(request.POST, instance=request.user.profile)
-                if form_user.is_valid() and form_pr.is_valid():
-                    form_user.save()
-                    form_pr.save()
-                    return redirect('profile-detail', username = request.user.username)
-            context = {'title': title,
-                    'form_user':form_user,
-                    'form_pr':form_pr}
-            return render(request, 'pages/update_info.html', context)
-        else:
-            messages.warning(request, 'Mày đừng có mà táy máy')
-            return redirect('profile-detail', username = request.user.username)
-    else: 
-        return redirect('home')
-
 def time_keeping(request):
     if request.user.is_authenticated:
         title = 'Check In'
@@ -130,47 +107,28 @@ def sheet(request, username):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         user = None
-
     if user and request.user.is_authenticated:
         if request.user.username == username:
             title = f'Bảng chấm công {username}'
-
-            # Lấy danh sách bảng chấm công của user
             sheets = Sheet.objects.filter(user=user).order_by('-date')
-
-            # Lấy tham số bộ lọc từ request
-            status = request.GET.get('status')  # Tình trạng
-            start_date = request.GET.get('start-date')  # Ngày bắt đầu
-            end_date = request.GET.get('end-date')  # Ngày kết thúc
-
-            # Áp dụng các bộ lọc
+            sheets.total_hour = sheets.aggregate(total_hour=Sum('work_hour'))['total_hour']
+            sheets.count_late = sheets.filter(status='Muộn').count()
+            status = request.GET.get('status', '')
+            start_date = request.GET.get('start-date', '')
+            end_date = request.GET.get('end-date', '')
             if status:
                 sheets = sheets.filter(status=status)
-            if start_date:
-                sheets = sheets.filter(date__gte=start_date)
-            if end_date:
-                sheets = sheets.filter(date__lte=end_date)
-
-            # Tính tổng giờ làm việc
-            total_hour = sheets.aggregate(total_hour=Sum('work_hour'))['total_hour'] or 0
-
-            # Lấy thông tin lương từ Profile (vì salary nằm trong Profile)
-            try:
-                profile = Profile.objects.get(user=user)
-                total_salary = total_hour * profile.salary
-            except Profile.DoesNotExist:
-                total_salary = 0  # Nếu không có Profile, gán lương bằng 0
-
-            # Đếm số lần đến muộn
-            count_late = sheets.filter(status='Đến Muộn').count()
-
-            context = {
-                'title': title,
-                'sheets': sheets,
-                'total_hour': total_hour,
-                'total_salary': total_salary,
-                'count_late': count_late,
-            }
+            if start_date and end_date:
+                sheets = sheets.filter(date__range=[start_date, end_date])
+            elif start_date:
+                sheets = sheets.filter(date__range=[start_date, datetime.now().date()])
+            elif end_date:
+                sheets = sheets.filter(date__range=[datetime.now().date(), end_date])
+            context = {'title': title,
+                        'start_date': start_date,
+                        'end_date': end_date,
+                        'status': status,
+                       'sheets': sheets}
             return render(request, 'pages/sheet.html', context)
         else:
             messages.warning(request, 'Hãy vào tài khoản của mình để xem')
@@ -182,7 +140,7 @@ def sheet(request, username):
 def letters(request):
     if request.user.is_authenticated:
         title = 'Hòm thư ý kiến'
-        my_letters = Letter.objects.filter(user=request.user).order_by('-created_at')
+        my_letters = Letter.objects.filter(user=request.user)
         form = LetterForm(request.POST or None)
         if request.POST:
             if form.is_valid():
@@ -217,11 +175,8 @@ def request_day_off(request, username):
         title = 'Danh sách nghỉ phép'
         user = User.objects.get(username=username)
         day_off_requests = DayOffRequest.objects.filter(user=user).order_by('-start_date')
-        max_end_date = day_off_requests.aggregate(max_end_date=Max('end_date'))['max_end_date']
-        if max_end_date is None:
-            # Nếu không có dữ liệu, đặt giá trị mặc định
-            max_end_date = timezone.now().date()  # Hoặc một giá trị phù hợp
-        else:
+        max_end_date = day_off_requests.aggregate(max_end_date=Max('end_date'))['max_end_date'] or None
+        if max_end_date:
             max_end_date += timedelta(days=1)
         form = DayOffRequestForm(request.POST or None, request.FILES or None)
         if request.POST:

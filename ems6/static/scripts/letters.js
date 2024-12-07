@@ -1,14 +1,11 @@
-const divForm = document.querySelector('.div-form')
-const buttonClose = divForm.querySelector('.close')
-const buttonLetter = document.querySelector('.btn-letter')
-buttonLetter.addEventListener('click', () => {
-  if (divForm.classList.contains('d-none')) {
-    divForm.classList.remove('d-none')
-  }
-})
+// Mở form
+document.getElementById("open-form").addEventListener("click", function () {
+  document.getElementById("form-container").classList.remove("d-none");
+  this.style.display = "none";
+});
 
-buttonClose.addEventListener('click', () => {
-  if (!divForm.classList.contains('d-none')) {
-    divForm.classList.add('d-none')
-  }
-})
+// Đóng form
+document.getElementById("close-form").addEventListener("click", function () {
+  document.getElementById("form-container").classList.add("d-none");
+  document.getElementById("open-form").style.display = "inline-block";
+});

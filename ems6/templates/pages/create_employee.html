@@ -1,0 +1,96 @@
+{% extends '../layouts/base.html' %}
+{% load static %}
+
+{% block main %}
+<br>
+<h1 style="text-align:center" class="mb-3">Thêm thông tin nhân viên</h1>
+<div class="container" style="display:flex; justify-content:center">
+    <form method="POST" style="width:60%" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_e.username.label_tag }}
+          {{ form_e.username }}
+        </p>
+        <p>
+          {{ form_e.email.label_tag }}
+          {{ form_e.email }}
+        </p>
+      </div>
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_e.first_name.label_tag }}
+          {{ form_e.first_name }}
+        </p>
+        <p>
+          {{ form_e.last_name.label_tag }}
+          {{ form_e.last_name }}
+        </p>
+      </div>
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_p.image.label_tag }}
+          {{ form_p.image }}
+        </p>
+        <p>
+          {{ form_p.cccd.label_tag }}
+          {{ form_p.cccd }}
+        </p>
+      </div>
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_p.gender.label_tag }}
+          {{ form_p.gender }}
+        </p>
+        <p>
+          {{ form_p.dob.label_tag }}
+          {{ form_p.dob }}
+        </p>
+        <p>
+          {{ form_p.phone_number.label_tag }}
+          {{ form_p.phone_number }}
+        </p>
+      </div>
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_p.position.label_tag }}
+          {{ form_p.position }}
+        </p>
+        <p>
+          {{ form_p.contract_period.label_tag }}
+          {{ form_p.contract_period }}
+        </p>
+      </div>
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_p.degree.label_tag }}
+          {{ form_p.degree }}
+        </p>
+        <p>
+          {{ form_p.major.label_tag }}
+          {{ form_p.major }}
+        </p>
+      </div>
+      <p>
+        {{ form_p.address.label_tag }}
+        {{ form_p.address }}
+      </p>
+      <div class="d-flex justify-content-between">
+        <p>
+          {{ form_e.password1.label_tag }}
+          {{ form_e.password1 }}
+        </p>
+        <p>
+          {{ form_e.password2.label_tag }}
+          {{ form_e.password2 }}
+        </p>
+      </div>
+        <center>
+            <button class="btn btn-info bg-btn pe-5 ps-5">Thêm</button>
+        </center>
+    </form>
+</div>
+<br><br><br>
+
+<script src="{% static 'scripts/create_employee.js' %}"></script>
+{% endblock %}

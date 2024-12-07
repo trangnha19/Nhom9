@@ -27,3 +27,18 @@
 .border-cell {
   border: 1px solid #E67E22;
 }
+
+.link-highlight {
+  color: #E67E22;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link-highlight:hover {
+  color: #D35400;
+  text-decoration: underline;
+}
+
+.table-bordered tbody tr:last-child {
+  border-bottom: 2px solid #E67E22;
+}

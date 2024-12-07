@@ -3,9 +3,9 @@
 
 {% block main %}
 <link rel="stylesheet" href="{% static 'styles/management.css' %}">
-<br>
+<br> 
 <h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">DASHBOARD</h1>
-<div class="container mt-3 d-flex justify-content-center">
+<div class="container mt-4 d-flex justify-content-center">
   <div class="w-100 row">
     <div class="col-3 dashboard-right">
       <div>
@@ -40,19 +40,19 @@
           <div>
             <a href="employee/?department=Marketing">
               <div class="title text-center">Marketing</div>
-              <div class="info text-center text-dark">{{ count_mkt }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ mkt_work }}/{{ count_mkt }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
           <div>
             <a href="employee/?department=Tài+chính">
               <div class="title text-center">Tài chính</div>
-              <div class="info text-center text-dark">{{ count_taichinh }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ taichinh_work }}/{{ count_taichinh }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
           <div>
             <a href="employee/?department=Nhân+sự">
               <div class="title text-center">Nhân sự</div>
-              <div class="info text-center text-dark">{{ count_nhansu }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ nhansu_work }}/{{ count_nhansu }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
         </div>
@@ -60,19 +60,19 @@
           <div>
             <a href="employee/?department=IT">
               <div class="title text-center">IT</div>
-              <div class="info text-center text-dark">{{ count_it }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ it_work }}/{{ count_it }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
           <div>
             <a href="employee/?department=Thiết+kế">
               <div class="title text-center">Thiết kế</div>
-              <div class="info text-center text-dark">{{ count_thietke }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ thietke_work }}/{{ count_thietke }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
           <div>
             <a href="employee/?department=Sản+xuất">
               <div class="title text-center">Sản xuất</div>
-              <div class="info text-center text-dark">{{ count_sanxuat }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ sanxuat_work }}/{{ count_sanxuat }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
         </div>
@@ -80,7 +80,7 @@
           <div>
             <a href="employee/?department=Kinh+doanh">
               <div class="title text-center">Kinh doanh</div>
-              <div class="info text-center text-dark">{{ count_kinhdoanh }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ kinhdoanh_work }}/{{ count_kinhdoanh }} <i class="fa-regular fa-user"></i></div>
             </a>
           </div>
         </div>
@@ -110,5 +110,7 @@
     </div>
   </div>
 </div>
+<div>Thư chưa xử lý: {{ letter_pending }}</div>
+<div>Yêu cầu nghỉ đang chờ: {{ day_off_pending }}</div>
 <br>
 {% endblock %}

@@ -26,7 +26,7 @@ selectStartDate.addEventListener('change', () => {
     endDateMinValue.setDate(endDateMinValue.getDate());
     const formattedEndDateMin = endDateMinValue.toISOString().split('T')[0];
     selectEndDate.min = formattedEndDateMin;
-    if (new Date(selectEndDate.value) <= new Date(startDateValue)) {
+    if (new Date(selectEndDate.value) < new Date(startDateValue)) {
       selectEndDate.value = '';
     }
   }

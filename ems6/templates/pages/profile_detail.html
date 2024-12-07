@@ -36,9 +36,6 @@
     </div>
   </div>
   <div class="col-3">
-    {% if request.user == user %}
-    <a href="/update_info/{{ user.username }}/" class="btn btn-info bg-btn pe-3 ps-3">Chỉnh sửa</a>
-    {% endif %}
   </div>
 </div>
 <br>
@@ -58,6 +55,11 @@
     <div class="mb-2">{{ user.profile.contract_period }}</div>
   </div>
 </div>
+{% if request.user.is_superuser %}
+<center>
+  <a href="/management/employee/update/{{ user.username }}" class="text-light btn btn-info bg-filter"><i class="fa-solid fa-user-pen me-2"></i>Sửa thông tin</a>
+</center>
+{% endif %}
 <br><br>
 
 {% endblock %}

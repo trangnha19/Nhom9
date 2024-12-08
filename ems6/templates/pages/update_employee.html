@@ -1,16 +1,50 @@
 {% extends '../layouts/base.html' %}
 {% block main %}
 <br>
-<h1 style="text-align:center" class="mb-3">Chỉnh sửa hồ sơ {{ user.first_name }} {{ user.last_name }}</h1>
-<div class="container" style="display:flex; justify-content:center">
-    <form method="POST" style="width:60%">
+<h1 style="text-align:center; color: #D35400; font-size: 2rem; font-weight: bold;" class="mb-4">SỬA HỒ SƠ {{ user.first_name }} {{ user.last_name }}</h1>
+<div class="container" style="display: flex; justify-content: center; padding: 20px; background-color: #FFF8F2; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+    <form method="POST" style="width: 60%;" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form_e.as_p }}
-        {{ form_p.as_p }}
-        <center>
-            <button class="btn btn-info bg-btn pe-5 ps-5">Cập nhật</button>
-        </center>
+        <div class="form-section mb-4">
+            <h5 style="color: #D35400; font-weight: bold; margin-bottom: 15px;">Thông tin tài khoản</h5>
+            {{ form_e.as_p }}
+        </div>
+        <div class="form-section">
+            <h5 style="color: #D35400; font-weight: bold; margin-bottom: 15px;">Thông tin cá nhân</h5>
+            {{ form_p.as_p }}
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn" style="background-color: #D35400; color: #fff; padding: 10px 30px; border-radius: 5px; border: none;">Cập nhật</button>
+        </div>
     </form>
 </div>
 <br><br><br>
+
+<style>
+    .form-section {
+        background-color: #FFFFFF;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #FF8C66;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    input, select, textarea {
+        border: 1px solid #FF8C66;
+        border-radius: 5px;
+        padding: 8px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    input:focus, select:focus, textarea:focus {
+        border-color: #D35400;
+        outline: none;
+        box-shadow: 0 0 5px rgba(211, 84, 0, 0.5);
+    }
+    h5 {
+        font-size: 1.2rem;
+    }
+    button:hover {
+        background-color: #BA4A00;
+    }
+</style>
 {% endblock %}

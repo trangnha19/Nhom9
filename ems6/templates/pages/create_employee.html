@@ -3,94 +3,110 @@
 
 {% block main %}
 <br>
-<h1 style="text-align:center" class="mb-3">Thêm thông tin nhân viên</h1>
-<div class="container" style="display:flex; justify-content:center">
-    <form method="POST" style="width:60%" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_e.username.label_tag }}
-          {{ form_e.username }}
-        </p>
-        <p>
-          {{ form_e.email.label_tag }}
-          {{ form_e.email }}
-        </p>
-      </div>
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_e.first_name.label_tag }}
-          {{ form_e.first_name }}
-        </p>
-        <p>
-          {{ form_e.last_name.label_tag }}
-          {{ form_e.last_name }}
-        </p>
-      </div>
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_p.image.label_tag }}
-          {{ form_p.image }}
-        </p>
-        <p>
-          {{ form_p.cccd.label_tag }}
-          {{ form_p.cccd }}
-        </p>
-      </div>
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_p.gender.label_tag }}
-          {{ form_p.gender }}
-        </p>
-        <p>
-          {{ form_p.dob.label_tag }}
-          {{ form_p.dob }}
-        </p>
-        <p>
-          {{ form_p.phone_number.label_tag }}
-          {{ form_p.phone_number }}
-        </p>
-      </div>
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_p.position.label_tag }}
-          {{ form_p.position }}
-        </p>
-        <p>
-          {{ form_p.contract_period.label_tag }}
-          {{ form_p.contract_period }}
-        </p>
-      </div>
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_p.degree.label_tag }}
-          {{ form_p.degree }}
-        </p>
-        <p>
-          {{ form_p.major.label_tag }}
-          {{ form_p.major }}
-        </p>
-      </div>
-      <p>
-        {{ form_p.address.label_tag }}
-        {{ form_p.address }}
-      </p>
-      <div class="d-flex justify-content-between">
-        <p>
-          {{ form_e.password1.label_tag }}
-          {{ form_e.password1 }}
-        </p>
-        <p>
-          {{ form_e.password2.label_tag }}
-          {{ form_e.password2 }}
-        </p>
-      </div>
-        <center>
-            <button class="btn btn-info bg-btn pe-5 ps-5">Thêm</button>
-        </center>
+<h1 style="text-align:center; color: #D35400; font-size: 2rem; font-weight: bold;" class="mb-4">THÊM THÔNG TIN NHÂN VIÊN</h1>
+<div class="container" style="display: flex; justify-content: center; padding: 20px; background-color: #FFF9F4; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+    <form method="POST" style="width: 60%;" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3 row">
+            <div class="col-md-6">
+                <label for="username" class="form-label text-orange">Tên đăng nhập</label>
+                {{ form_e.username }}
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label text-orange">Email</label>
+                {{ form_e.email }}
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-6">
+                <label for="first_name" class="form-label text-orange">Họ</label>
+                {{ form_e.first_name }}
+            </div>
+            <div class="col-md-6">
+                <label for="last_name" class="form-label text-orange">Tên</label>
+                {{ form_e.last_name }}
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-6">
+                <label for="image" class="form-label text-orange">Ảnh đại diện</label>
+                {{ form_p.image }}
+            </div>
+            <div class="col-md-6">
+                <label for="cccd" class="form-label text-orange">CCCD</label>
+                {{ form_p.cccd }}
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-4">
+                <label for="gender" class="form-label text-orange">Giới tính</label>
+                {{ form_p.gender }}
+            </div>
+            <div class="col-md-4">
+                <label for="dob" class="form-label text-orange">Ngày sinh</label>
+                {{ form_p.dob }}
+            </div>
+            <div class="col-md-4">
+                <label for="phone_number" class="form-label text-orange">Số điện thoại</label>
+                {{ form_p.phone_number }}
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-6">
+                <label for="position" class="form-label text-orange">Chức vụ</label>
+                {{ form_p.position }}
+            </div>
+            <div class="col-md-6">
+                <label for="contract_period" class="form-label text-orange">Thời hạn hợp đồng</label>
+                {{ form_p.contract_period }}
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-6">
+                <label for="degree" class="form-label text-orange">Bằng cấp</label>
+                {{ form_p.degree }}
+            </div>
+            <div class="col-md-6">
+                <label for="major" class="form-label text-orange">Chuyên ngành</label>
+                {{ form_p.major }}
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label text-orange">Địa chỉ</label>
+            {{ form_p.address }}
+        </div>
+        <div class="mb-3 row">
+            <div class="col-md-6">
+                <label for="password1" class="form-label text-orange">Mật khẩu</label>
+                {{ form_e.password1 }}
+            </div>
+            <div class="col-md-6">
+                <label for="password2" class="form-label text-orange">Xác nhận mật khẩu</label>
+                {{ form_e.password2 }}
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button class="btn" style="background-color: #FF7F3F; color: #fff; padding: 10px 30px; border-radius: 5px; border: none;">Thêm</button>
+        </div>
     </form>
 </div>
 <br><br><br>
 
 <script src="{% static 'scripts/create_employee.js' %}"></script>
+
+<style>
+    .text-orange {
+        color: #FF7F3F;
+        font-weight: bold;
+    }
+    input, select, textarea {
+        border: 1px solid #FFAB73;
+        border-radius: 5px;
+        padding: 8px;
+        width: 100%;
+    }
+    button:hover {
+        background-color: #FF5722;
+    }
+</style>
 {% endblock %}

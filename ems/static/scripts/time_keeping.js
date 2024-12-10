@@ -9,6 +9,7 @@ if (checkIO) {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const {latitude, longitude} = position.coords
+
         if (Math.abs(latitude - requiredLatitude) <= tolerance && Math.abs(longitude - requiredLongitude) <= tolerance) {
           const inputHidden = formCheck.querySelector('[hidden]')
           const buttonValue = checkIO.value 
@@ -18,7 +19,7 @@ if (checkIO) {
           const inputHidden = formCheck.querySelector('[hidden]')
           const buttonValue = checkIO.value 
           inputHidden.value = buttonValue
-          formCheck.submit() // Khi nào ấy thì xóa từ dòng 18 đến dòng 21 và bỏ comment dòng 22 đi là được
+          formCheck.submit() // Khi nào cần dùng xác định vị trí thì xóa từ dòng 19 đến dòng 22 và bỏ comment dòng 23 đi là được
           // alert('Bạn đang không ở công ty')
         }
       }, (err) => {
@@ -34,5 +35,6 @@ setInterval(() => {
   const hours = String(now.getHours()).padStart(2, '0')
   const minutes = String(now.getMinutes()).padStart(2, '0')
   const seconds = String(now.getSeconds()).padStart(2, '0')
+
   clockElement.textContent = `${hours}:${minutes}:${seconds}`
 }, 1000)

@@ -16,6 +16,9 @@
         <li class="nav-item">
           <a class="nav-link {% if request.path == '/sheet/'|add:request.user.username|add:'/' %} text-select {% endif %} nav-link-hover" href="/sheet/{{request.user.username}}/">BẢNG CÔNG</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == '/request-day-off/'|add:request.user.username|add:'/' %} text-select {% endif %} nav-link-hover" href="{% url 'request-day-off' request.user.username %}">XIN NGHỈ</a>
+        </li>
         {% endif %}
 
         {% if request.user.is_superuser %}
@@ -31,15 +34,33 @@
         <li class="nav-item">
           <a class="nav-link {% if request.path == '/management/salary/' %} text-select {% endif %} nav-link-hover" href="/management/salary/" style="font-size: 16px;">BẢNG LƯƠNG</a>
         </li>
-        {% endif %}
-      </ul>
-      {% if request.user.is_authenticated %}
-      <ul class="navbar-nav">
-        {% if request.user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link {% if request.path == '/letters/' %} text-select {% endif %} nav-link-hover" href="/management/letter/" style="font-size: 16px;"><i class="fa-regular fa-envelope"></i></a>
+          <a class="nav-link d-flex gap-1 {% if request.path == '/management/dayoff/' %} text-select {% endif %} nav-link-hover" href="/management/dayoff/" style="font-size: 16px; align-items: center;">
+            ĐƠN NGHỈ 
+            {% if count_pending > 0 %}
+            <span class="badge text-bg-light rounded-pill" style="color: #f67809 !important;">
+              {{ count_pending }}
+            </span>
+            {% endif %}
+          </a>
         </li>
         {% endif %}
+      </ul>
+
+      {% if request.user.is_authenticated %}
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          {% if request.user.is_superuser %}
+            <a class="nav-link {% if request.path == '/management/letter/' %} text-select {% endif %} nav-link-hover" href="/management/letter/" style="font-size: 16px;">
+              <i class="fa-regular fa-envelope"></i>
+            </a>
+          {% else %}
+            <a class="nav-link {% if request.path == '/letters/' %} text-select {% endif %} nav-link-hover" href="/letters/" style="font-size: 16px;">
+              <i class="fa-regular fa-envelope"></i>
+            </a>
+          {% endif %}
+        </li>
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle nav-link-hover" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 16px;">
             <i class="fa-regular fa-user"></i> TÀI KHOẢN
@@ -61,38 +82,3 @@
   </div>
 </nav>
 
-<!-- <style>
-  /* Màu nền của navbar */
-  .bg-orange {
-    background-color: #FF7043;
-  }
-
-  /* Hiệu ứng hover và transition cho liên kết */
-  .nav-link-hover {
-    color: white;
-    transition: color 0.3s ease, background-color 0.3s ease;
-  }
-
-  .nav-link-hover:hover {
-    color: #FFAB91; /* Màu cam nhạt hơn khi hover */
-    background-color: rgba(255, 255, 255, 0.1); /* Nền nhạt khi hover */
-    border-radius: 5px; /* Bo góc nhẹ */
-    padding: 5px 10px;
-  }
-
-  /* Dropdown menu */
-  .dropdown-menu.bg-orange {
-    background-color: #FF7043;
-  }
-
-  /* Chỉnh màu chữ trong dropdown */
-  .dropdown-item {
-    color: white;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .dropdown-item:hover {
-    background-color: #FFAB91; /* Màu nền dropdown nhạt khi hover */
-    color: #333; /* Màu chữ tối hơn khi hover */
-  }
-</style> -->

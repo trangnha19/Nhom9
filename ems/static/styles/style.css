@@ -16,6 +16,16 @@
   --bs-btn-active-border-color: none !important;
 }
 
+.bg-btn-light {
+  color: #F67809;
+  background-color: white !important;
+  --bs-btn-border-color: #F67809 !important;
+  border-radius: 12px !important;
+  --bs-btn-hover-border-color: none !important;
+  --bs-btn-active-bg: none !important;
+  --bs-btn-active-border-color: none !important;
+}
+
 .bg-filter {
   background-color: #F67809 !important;
   --bs-btn-border-color: #F67809 !important;
@@ -67,13 +77,6 @@ main {
   border-bottom: .1px solid rgb(223, 223, 223);
 }
 
-input[name='username'], input[name='password'] {
-  font-size: 17px;
-  height: 50px;
-  border: .5px solid black;
-  border-radius: 10px;
-}
-
 .text-select {
   font-weight: 900 !important;
 }
@@ -89,4 +92,42 @@ table {
 
 table th, table td {
   border: 1px solid #000000; 
+}
+
+/* Màu nền của navbar */
+.bg-orange {
+  background-color: #FF7043;
+}
+
+/* Hiệu ứng hover và transition cho liên kết */
+.nav-link-hover {
+  color: white;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.nav-link-hover:hover {
+  color: #FFAB91; /* Màu cam nhạt hơn khi hover */
+  background-color: rgba(255, 255, 255, 0.1); /* Nền nhạt khi hover */
+  border-radius: 5px; /* Bo góc nhẹ */
+  padding: 5px 10px;
+}
+
+/* Dropdown menu */
+.dropdown-menu.bg-orange {
+  background-color: #FF7043;
+}
+
+/* Chỉnh màu chữ trong dropdown */
+.dropdown-item {
+  color: white;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #FFAB91; /* Màu nền dropdown nhạt khi hover */
+  color: #333; /* Màu chữ tối hơn khi hover */
+}
+
+.label-request {
+  color: #D35400;
 }

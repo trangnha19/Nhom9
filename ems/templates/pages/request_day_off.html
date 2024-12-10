@@ -1,0 +1,68 @@
+{% extends '../layouts/base.html' %}
+{% load static %}
+
+{% block main %}
+<link rel="stylesheet" href="{% static 'styles/table.css' %}">
+
+<br>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Yêu cầu nghỉ phép của bạn</h1>
+<br>
+<div class="container p-4" style="background-color: #FFF3E0; border: 2px solid #E67E22; border-radius: 10px;">
+  <h2 style="font-size: 1.5rem; color: #D35400;">Gửi yêu cầu</h2>
+  <form method="POST" enctype="multipart/form-data" class="form-request" max_end_date="{{ max_end_date|date:'Y-m-d' }}">
+    {% csrf_token %}
+    {{ form.as_p }}  
+    <center>
+      <button type="submit" class="btn btn-primary" style="background-color: #E67E22; border-color: #E67E22;">Gửi yêu cầu</button>
+    </center>
+  </form>
+</div>
+
+<br>
+{% if day_off_requests %}
+<table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
+  <thead class="bg-tab text-white" style="background-color: #E67E22;">
+    <tr>
+      <th scope="col" class="text-center" >Ngày bắt đầu</th>
+      <th scope="col" class="text-center" >Ngày kết thúc</th>
+      <th scope="col" class="text-center" >Lý do</th>
+      <th scope="col" class="text-center" >Trạng thái</th>
+      <th scope="col" class="text-center" >Minh chứng</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for request in day_off_requests %}
+    <tr class="table-row" style="transition: background-color 0.3s;">
+      <td class="text-center align-middle border-cell">{{ request.start_date|date:"d/m/Y" }}</td>
+      <td class="text-center align-middle border-cell">{{ request.end_date|date:"d/m/Y" }}</td>
+      <td class="align-middle border-cell">{{ request.reason }}</td>
+      <td class="text-center align-middle border-cell">
+        {% if request.status == 'approved' %}
+        <span style="color: green; font-weight: bold;">Đã duyệt</span>
+        {% elif request.status == 'pending' %}
+        <span style="color: orange; font-weight: bold;">Đang chờ</span>
+        {% else %}
+        <span style="color: red; font-weight: bold;">Bị từ chối</span>
+        {% endif %}
+      </td>
+      <td class="text-center align-middle border-cell">
+        {% if request.image %}
+        <a href="{{ request.image.url }}" target="_blank" style="text-decoration: none;">
+          <button class="btn btn-secondary" style="background-color: #E67E22; border-color: #E67E22; color: white;">
+            Xem ảnh
+          </button>
+        </a>
+        {% else %}
+        <span>Không có hình ảnh</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+{% endif %}
+
+<script src="{% static 'scripts/request_day_off.js' %}"></script>
+
+{% endblock %}

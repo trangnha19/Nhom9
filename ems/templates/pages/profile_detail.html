@@ -2,7 +2,7 @@
 
 {% block main %}
 <br>
-<h1 style="text-align: center;">Hồ sơ {{ user.first_name }} {{ user.last_name }}</h1>
+<h1 style="text-align: center;color: #D35400;">Hồ sơ {{ user.first_name }} {{ user.last_name }}</h1>
 <div class="row mt-3" style="justify-content: space-between;">
   <div class="col-3">
     <div class="d-flex justify-content-center">
@@ -11,7 +11,7 @@
   </div>
   <div class="col-6" style="font-size: 18px;">
     <div class="row">
-      <div class="col-4" style="color: blue;">
+      <div class="col-4" style="color: #D35400;">
         <div class="mb-2">Mã NV:</div>
         <div class="mb-2">Họ tên:</div>
         <div class="mb-2">CCCD:</div>
@@ -36,14 +36,11 @@
     </div>
   </div>
   <div class="col-3">
-    {% if request.user == user %}
-    <a href="/update_info/{{ user.username }}/" class="btn btn-info bg-btn pe-3 ps-3">Chỉnh sửa</a>
-    {% endif %}
   </div>
 </div>
 <br>
 <div class="row ms-4" style="font-size: 18px;">
-  <div class="col-2" style="color: blue;">
+  <div class="col-2" style="color: #D35400;">
     <div class="mb-2">Bằng cấp:</div>
     <div class="mb-2">Chuyên ngành:</div>
     <div class="mb-2">Email cá nhân:</div>
@@ -58,6 +55,11 @@
     <div class="mb-2">{{ user.profile.contract_period }}</div>
   </div>
 </div>
+{% if request.user.is_superuser %}
+<center>
+  <a href="/management/employee/update/{{ user.username }}" class="text-light btn btn-info bg-filter"><i class="fa-solid fa-user-pen me-2"></i>Sửa thông tin</a>
+</center>
+{% endif %}
 <br><br>
 
 {% endblock %}

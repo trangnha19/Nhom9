@@ -1,197 +1,116 @@
 {% extends '../layouts/base.html' %}
+{% load static %}
 
 {% block main %}
-<br>
-<h1 style="text-align: center; color: #333; font-size: 2.5rem; font-weight: bold;">DASHBOARD</h1>
-<div class="container mt-4">
-
-  <!-- Hàng đầu: Tổng Nhân Viên và Phòng Ban -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <a href="employee/" class="card dashboard-card text-dark equal-height-card">
-        <div class="card-body text-center">
-          <h3 class="card-title">TỔNG NHÂN VIÊN</h3>
-          <div class="count">{{ count_emp }}</div>
-          <div class="d-flex justify-content-center gap-4 mt-3">
-            <span><strong>{{ count_emp_male }}</strong> <i class="fa-solid fa-mars" style="color: #FF7043;"></i></span>
-            <span><strong>{{ count_emp_female }}</strong> <i class="fa-solid fa-venus" style="color: #FFAB91;"></i></span>
+<link rel="stylesheet" href="{% static 'styles/management.css' %}">
+<br> 
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">DASHBOARD</h1>
+<div class="container mt-4 d-flex justify-content-center">
+  <div class="w-100 row">
+    <div class="col-3 dashboard-right">
+      <div>
+        <a href="employee">
+          <h4 class="text-center text-dark">TỔNG NHÂN VIÊN</h4>
+          <div class="info text-center">{{ count_emp }}</div>
+          <div class="d-flex justify-content-between px-2">
+            <div class="text-dark" style="font-size: 21px;">{{ count_emp_male }}<i class="fa-solid fa-mars ms-1" style="color: #FF7043;"></i></div>
+            <div class="text-dark" style="font-size: 21px;">{{ count_emp_female }}<i class="fa-solid fa-venus ms-1" style="color: #FF7043;"></i></div>
+          </div>
+        </a>
+      </div>
+      <div>
+        <a href="employee">
+          <h4 class="text-center text-dark">TỔNG PHÒNG BAN</h4>
+          <div class="info text-center">{{ count_dpm }}</div>
+        </a>
+      </div>
+      <div>
+        <a href="dayoff/?status=Đã+duyệt">
+          <h4 class="text-center text-dark">NGHỈ PHÉP HÔM NAY</h4>
+          <div class="info text-center">{{ count_leave_today }}</div>
+        </a>
+      </div>
+    </div>
+    <div class="col-9 dashboard-left">
+      <div class="header">
+        <h4 class="text-center">PHÒNG BAN</h4>
+      </div>
+      <div class="body mb-4">
+        <div class="d-flex justify-content-between">
+          <div>
+            <a href="employee/?department=Marketing">
+              <div class="title text-center">Marketing</div>
+              <div class="info text-center text-dark">{{ mkt_work }}/{{ count_mkt }} <i class="fa-regular fa-user"></i></div>
+            </a>
+          </div>
+          <div>
+            <a href="employee/?department=Tài+chính">
+              <div class="title text-center">Tài chính</div>
+              <div class="info text-center text-dark">{{ taichinh_work }}/{{ count_taichinh }} <i class="fa-regular fa-user"></i></div>
+            </a>
+          </div>
+          <div>
+            <a href="employee/?department=Nhân+sự">
+              <div class="title text-center">Nhân sự</div>
+              <div class="info text-center text-dark">{{ nhansu_work }}/{{ count_nhansu }} <i class="fa-regular fa-user"></i></div>
+            </a>
           </div>
         </div>
-      </a>
-    </div>
-    <div class="col-md-6">
-      <a href="employee/" class="card dashboard-card text-dark equal-height-card">
-        <div class="card-body text-center">
-          <h3 class="card-title">PHÒNG BAN</h3>
-          <div class="count">{{ count_dpm }}</div>
+        <div class="d-flex justify-content-between">
+          <div>
+            <a href="employee/?department=IT">
+              <div class="title text-center">IT</div>
+              <div class="info text-center text-dark">{{ it_work }}/{{ count_it }} <i class="fa-regular fa-user"></i></div>
+            </a>
+          </div>
+          <div>
+            <a href="employee/?department=Thiết+kế">
+              <div class="title text-center">Thiết kế</div>
+              <div class="info text-center text-dark">{{ thietke_work }}/{{ count_thietke }} <i class="fa-regular fa-user"></i></div>
+            </a>
+          </div>
+          <div>
+            <a href="employee/?department=Sản+xuất">
+              <div class="title text-center">Sản xuất</div>
+              <div class="info text-center text-dark">{{ sanxuat_work }}/{{ count_sanxuat }} <i class="fa-regular fa-user"></i></div>
+            </a>
+          </div>
         </div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Hàng thứ hai: Thông tin Chấm Công -->
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <div class="card dashboard-card text-dark">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <h3 class="card-title">CHẤM CÔNG</h3>
-          <div class="date">{{ today|date:"l, d/m/Y" }}</div>
+        <div class="d-flex justify-content-center">
+          <div>
+            <a href="employee/?department=Kinh+doanh">
+              <div class="title text-center">Kinh doanh</div>
+              <div class="info text-center text-dark">{{ kinhdoanh_work }}/{{ count_kinhdoanh }} <i class="fa-regular fa-user"></i></div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="header">
+        <div class="d-flex justify-content-between" style="align-items: center;">
+          <h4 class="text-center mt-5">CHẤM CÔNG</h4>
+          <div class="date-now">{{ today| date:"l, d/m/Y" }}</div>
+        </div>
+      </div>
+      <div class="body time-keeping">
+        <div class="d-flex justify-content-between w-100">
+          <div>
+            <a href="sheet/?status=Đúng+Giờ&start-date={{ today|date:'Y-m-d' }}" style="align-items: center;" class="w-100 h-100 d-flex justify-content-between">
+              <div class="title">Đúng giờ: </div>
+              <div class="count">{{ count_ontime }}</div>
+            </a>
+          </div>
+          <div>
+            <a href="sheet/?status=Đến+Muộn&start-date={{ today|date:'Y-m-d' }}" style="align-items: center;" class="w-100 h-100 d-flex justify-content-between">
+              <div class="title">Đi muộn: </div>
+              <div class="count">{{ count_late }}</div>
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Hàng thứ ba: Đi muộn và Đúng giờ -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <a href="sheet/?status=Muộn&start-date={{ today|date:'Y-m-d' }}" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h4>Đi muộn</h4>
-          <div class="count-small">{{ count_late }}</div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-6">
-      <a href="sheet/?status=Đúng+Giờ&start-date={{ today|date:'Y-m-d' }}" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h4>Đúng giờ</h4>
-          <div class="count-small">{{ count_ontime }}</div>
-        </div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Hàng thứ tư: Thông tin về Vị trí (Trưởng phòng, Nhân viên) -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <a href="employee/?position=Trưởng+phòng" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h4>Trưởng phòng</h4>
-          <div class="count">{{ count_manage }}</div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-6">
-      <a href="employee/?position=Nhân+viên" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h4>Nhân viên</h4>
-          <div class="count">{{ count_employee }}</div>
-        </div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Hàng thứ năm: Các phòng ban khác với bố cục như Tổng Nhân Viên -->
-  <div class="row">
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=IT" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng IT</h6>
-          <div class="count-small">{{ count_it }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=Nhân+sự" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng Nhân sự</h6>
-          <div class="count-small">{{ count_nhansu }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=Tài+chính" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng Tài chính</h6>
-          <div class="count-small">{{ count_taichinh }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=Kinh+doanh" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng Kinh doanh</h6>
-          <div class="count-small">{{ count_kinhdoanh }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=Thiết+kế" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng Thiết kế</h6>
-          <div class="count-small">{{ count_thietke }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=Sản+xuất" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng Sản xuất</h6>
-          <div class="count-small">{{ count_sanxuat }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-    <div class="col-md-4 mb-3">
-      <a href="employee/?department=Marketing" class="card dashboard-card text-dark">
-        <div class="card-body text-center">
-          <h6>Phòng Marketing</h6>
-          <div class="count-small">{{ count_mkt }} <i class="fa-regular fa-user"></i></div>
-        </div>
-      </a>
-    </div>
-  </div>
 </div>
-
-<!-- CSS cho bố cục và kích thước đồng đều -->
-<style>
-  .dashboard-card {
-    background-color: #FFF3E0;
-    color: #333;
-    border-radius: 12px;
-    border: 1px solid #FFAB91;
-    text-decoration: none;
-    transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  }
-
-  .equal-height-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 200px;
-  }
-
-  .card-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #FF7043;
-  }
-
-  .count {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #D84315;
-  }
-
-  .count-small {
-    font-size: 1.8rem;
-    color: #333;
-  }
-
-  h6 {
-    font-size: 1rem;
-    color: #333;
-  }
-
-  .date {
-    font-size: 1rem;
-    color: #666;
-  }
-</style>
-
+<div>Thư chưa xử lý: {{ letter_pending }}</div>
+<div>Yêu cầu nghỉ đang chờ: {{ day_off_pending }}</div>
+<br>
 {% endblock %}

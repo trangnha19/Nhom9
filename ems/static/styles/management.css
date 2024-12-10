@@ -1,0 +1,90 @@
+.dashboard-right > div {
+  margin-bottom: 15px;
+  border: 2px solid #D35400;
+  height: 10vw;
+  background-color: #FFEAD7;
+  padding: 10px;
+}
+
+.dashboard-right > div h4 {
+  margin: 0 !important;
+}
+
+.dashboard-right > div .info {
+  font-size: 50px;
+  font-weight: 700;
+  color: #f67809 !important;
+}
+
+.dashboard-right > div > a {
+  text-decoration: none !important;
+}
+
+.dashboard-right {
+  padding-right: 15px;
+}
+
+.dashboard-left {
+  padding-left: 15px;
+}
+
+.dashboard-left .header {
+  margin-bottom: 12px;
+  border: 2px solid #D35400;
+  background-color: #FFEAD7;
+  padding: 10px;
+}
+
+.dashboard-left > div h4 {
+  margin: 0 !important;
+}
+
+.dashboard-left .body > div > div {
+  margin-bottom: 7px;
+  border: 1px solid #D35400;
+  background-color: #fffbf7;
+  padding: 10px;
+  width: 31%;
+}
+
+.dashboard-left .body a {
+  text-decoration: none;
+}
+
+.dashboard-left .body > div > div .title {
+  color: #f67809;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.dashboard-left .body > div > div .info {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.time-keeping {
+  height: 76px;
+}
+
+.time-keeping > div {
+  height: 100%;
+}
+
+.time-keeping a {
+  text-decoration: none !important;
+}
+
+.time-keeping > div > div {
+  margin: 0 !important;
+  width: 45% !important;
+  display: flex;
+  align-items: center;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+}
+
+.time-keeping > div > div .count {
+  font-size: 30px;
+  font-weight: 700;
+  color: black !important;
+}

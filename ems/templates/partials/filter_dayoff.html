@@ -1,0 +1,22 @@
+<div class="col-12 d-flex justify-content-end">
+  <form action="" class="col-8 d-flex gap-2 justify-content-end">
+    <div>
+      <label for="select-status">Trạng thái</label><br>
+      <select id="select-status" name="status" class="form-select" style="cursor: pointer;" aria-label="Default select example">
+        <option value="">Tất Cả</option>
+        <option {% if status == 'Đang chờ' %} selected {% endif %}>Đang chờ</option>
+        <option {% if status == 'Đã duyệt' %} selected {% endif %}>Đã duyệt</option>
+        <option {% if status == 'Từ chối' %} selected {% endif %}>Từ chối</option>
+      </select>
+    </div>
+    <div>
+      <label for="start-date">Ngày Bắt Đầu</label><br>
+      <input type="date" name="start-date" id="start-date" class="form-control" style="cursor: pointer;" value="{% if start_date %}{{ start_date }}{% endif %}">
+    </div>
+    <div>
+      <label for="end_date">Ngày Kết Thúc</label><br>
+      <input type="date" name="end-date" id="end_date" class="form-control" style="cursor: pointer;" value="{% if end_date %}{{ end_date }}{% endif %}">
+    </div>
+    <button type="submit" class="btn btn-info bg-filter mt-4">Lọc</button>
+  </form>
+</div>

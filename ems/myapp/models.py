@@ -1,5 +1,5 @@
 from datetime import time, timedelta
-from datetime import datetime, time
+from datetime import time, datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -9,7 +9,6 @@ from decimal import Decimal
 
 class Department(models.Model):
     name=models.CharField(max_length=50)
-    description = models.TextField()
     salary = models.DecimalField(max_digits=10, decimal_places=0)
     
     def __str__(self):
@@ -20,7 +19,6 @@ class Position(models.Model):
     name=models.CharField(max_length=50)
     department=models.ForeignKey(Department, on_delete=models.CASCADE)
     salary_coef=models.DecimalField(max_digits=3, decimal_places=1)
-    description = models.TextField()
 
     def __str__(self):
         return f'{self.name} - {self.department.name}'
@@ -40,7 +38,7 @@ class Profile(models.Model):
     major = models.CharField(max_length=100)
     contract_period = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    salary = models.IntegerField(default=0)
+    salary = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=0)
     # Thêm cột trạng thái
     STATUS_CHOICES = [
         ('working', 'Đang làm'),
@@ -51,6 +49,10 @@ class Profile(models.Model):
 
     def __str__(self):
          return f'Profile: {self.user.username}'
+     
+    def save(self, *args, **kwargs):
+        self.salary = self.position.salary_coef * self.position.department.salary
+        super().save( *args, **kwargs)
 
    
 
@@ -83,24 +85,26 @@ class Sheet(models.Model):
     checkin=models.TimeField()
     checkout=models.TimeField(blank=True, null=True)
     work_hour=models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    salary=models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
-    status=models.CharField(max_length=20, choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn'), ('Về Sớm', 'Về Sớm')], default='Đúng Giờ')
+    status=models.CharField(max_length=20, choices=[('Đúng Giờ', 'Đúng Giờ'), ('Đến Muộn', 'Đến Muộn')], default='Đúng Giờ')
     ot = models.IntegerField(null=True, blank=True, default=1)
-
+    late_time = models.IntegerField(null=True, blank=True, default=0)  # Add late_time field
+    
     def __str__(self):
         return f'{self.user.username} - {self.date}'
 
-
     def update_status(self):
-        # Check if the user is late (after 8 AM) or leaves early (before 6 PM)
-        if self.checkin > time(8, 0, 0):
-            self.status = 'Đến Muộn'
-        elif self.checkout and self.checkout < time(17, 0, 0):
-            self.status = 'Về Sớm'
-        else:
-            self.status = 'Đúng Giờ'
-        
-        # Calculate overtime (OT) if checkout time is after 6 PM
+        # Standard check-in time (8:00 AM)
+        standard_checkin = time(8, 0, 0)
+        if self.checkin:  # Ensure check-in time is set
+            checkin_datetime = datetime.combine(self.date, self.checkin)
+            standard_datetime = datetime.combine(self.date, standard_checkin)
+            if self.checkin > standard_checkin:
+                late_delta = checkin_datetime - standard_datetime
+                self.late_time = late_delta.seconds // 3600  # Convert seconds to minutes
+                self.status = 'Đến Muộn'
+            else:
+                self.late_time = 0
+                self.status = 'Đúng Giờ'
         if self.work_hour:
             self.ot = max(0, int(self.work_hour - 9))
 
@@ -112,3 +116,20 @@ class Sheet(models.Model):
 
         self.update_status()
         super().save( *args, **kwargs)
+
+
+class DayOffRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    reason = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.start_date} to {self.end_date}"

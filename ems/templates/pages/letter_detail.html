@@ -1,50 +1,62 @@
 {% extends '../layouts/base.html' %}
+{% load static %}
 
 {% block main %}
 <br>
-<h1 style="text-align:center; font-size: 2.5rem; font-weight: 700; color: #D35400;" class="mb-4" >CHI TIẾT GÓP Ý</h1>
-<div class="container" style="display:flex; justify-content:center;">
-  <div style="width: 80%; background-color: #FFF8E1; border: 2px solid #E67E22; border-radius: 15px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;" class="mb-4">CHI TIẾT GÓP Ý</h1>
+
+<div class="container p-4" style="background-color: #FFF3E0; border: 2px solid #E67E22; border-radius: 10px; box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); max-width: 800px;">
+  <div style="padding: 1rem 1rem 1rem 3rem; font-size: 1.1rem; color: #5D4037;">
     {% if request.user.is_superuser %}
-    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">
-      <span style="color: #D35400;">Người gửi:</span> {{ letter.user.first_name }} {{ letter.user.last_name }}
+    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+      <strong style="flex: 0 0 200px; text-align: left;">Người gửi:</strong>
+      <span style="flex: 1;">{{ letter.user.first_name }} {{ letter.user.last_name }}</span>
     </div>
     {% endif %}
-    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">
-      <span style="color: #D35400;">Chủ đề:</span> {{ letter.topic.name }}
+    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+      <strong style="flex: 0 0 200px; text-align: left;">Chủ đề:</strong>
+      <span style="flex: 1;">{{ letter.topic.name }}</span>
     </div>
-    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">
-      <span style="color: #D35400;">Nội dung:</span>
-      <p style="margin: 10px 0 0; line-height: 1.6; font-weight: 400;">{{ letter.content }}</p>
+    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+      <strong style="flex: 0 0 200px; text-align: left;">Nội dung:</strong>
+      <span style="flex: 1;">{{ letter.content }}</span>
     </div>
-    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 10px;">
-      <span style="color: #D35400;">Thời gian:</span> {{ letter.created_at|date:"H:i, d/m/yy" }}
+    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+      <strong style="flex: 0 0 200px; text-align: left;">Thời gian:</strong>
+      <span style="flex: 1;">{{ letter.created_at|date:"H:i, d/m/yy" }}</span>
     </div>
-    <div style="font-size: 1rem; font-weight: 600; margin-bottom: 20px;">
-      <span style="color: #D35400;">Trạng thái:</span>
-      <span style="color: {% if letter.status == 'Đang xử lý' %}#E67E22{% else %}#27AE60{% endif %}; font-weight: 700;">
+    <div style="margin-bottom: 15px; display: flex; align-items: center;">
+      <strong style="flex: 0 0 200px; text-align: left;">Trạng thái:</strong>
+      <span style="flex: 1; color: {% if letter.status == 'Đã xử lý' %}green{% elif letter.status == 'Đang xử lý' %}orange{% else %}red{% endif %}; font-weight: bold;">
         {{ letter.status }}
       </span>
     </div>
-    <center>
-      {% if request.user.is_superuser and letter.status == 'Đang xử lý' %}
-      <form method="post" form-status>
-        {% csrf_token %}
-        <button type="submit" class="btn btn-success mt-3 text-light pe-5 ps-5 pt-2 pb-2" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
-          Đã xử lý
-        </button>
-      </form>
-      {% endif %}
-      <a href="{% if request.user.is_superuser %}/management/letter/{% else %}/letters/{% endif %}"
-         class="btn btn-info bg-btn mt-3 text-light pe-5 ps-5 pt-2 pb-2"
-         style="border-radius: 8px; background-color: #3498DB; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);">
-        {% if request.user.is_superuser %}Quản lý hòm thư{% else %}Quay lại hòm thư{% endif %}
-      </a>
-    </center>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    {% if request.user.is_superuser and letter.status == 'Đang xử lý' %}
+    <form method="post" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary" style="background-color: #E67E22; border-color: #E67E22; padding: 10px 20px; font-size: 1rem;">
+        Đã xử lý
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    {% if request.user.is_superuser %}
+    <a href="/management/letter/" class="btn btn-secondary" style="background-color: #28a745; border-color: #28a745; color: white; padding: 10px 20px; font-size: 1rem; text-decoration: none;">
+      Quản lý hòm thư
+    </a>
+    {% else %}
+    <a href="/letters/" class="btn btn-secondary" style="background-color: #E67E22; border-color: #E67E22; color: white; padding: 10px 20px; font-size: 1rem; text-decoration: none;">
+      Quay lại hòm thư
+    </a>
+    {% endif %}
   </div>
 </div>
 <br><br>
 
-{% load static %}
 <script src="{% static 'scripts/letter_detail.js' %}"></script>
 {% endblock %}

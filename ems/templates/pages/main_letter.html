@@ -29,7 +29,11 @@
       {% endif %}
       </td>
       <td class="text-center align-middle">
-        {{ letter.status }}
+        {% if letter.status == "Đã xử lý" %}
+          <span class="status-resolved">{{ letter.status }}</span>
+        {% elif letter.status == "Đang xử lý" %}
+          <span class="status-waiting">{{ letter.status }}</span>
+        {% endif %}
       </td>
       <td class="text-center align-middle">
         <a class="badge bg-status-left" style="text-decoration: none;" href="/letters/{{letter.id}}/">Xem chi tiết</a>
@@ -74,11 +78,6 @@
     color: #fff;
   }
 
-  .badge.bg-status-right {
-    background-color: #27AE60 !important; /* Xanh lá nhạt */
-    color: #fff;
-  }
-
   /* Border toàn khung bảng */
   .custom-border {
     border: 2px solid #E67E22; /* Border màu cam đậm */
@@ -88,6 +87,18 @@
   /* Border hàng cuối cùng */
   .table-bordered tbody tr:last-child {
     border-bottom: 2px solid #E67E22;
+  }
+
+  /* Trạng thái "Đã xử lý" */
+  .status-resolved {
+    color: #27AE60; /* Màu xanh lá */
+    font-weight: bold;
+  }
+
+  /* Trạng thái "Đang xử lý" */
+  .status-waiting {
+    color: #F39C12; /* Màu vàng đậm */
+    font-weight: bold;
   }
 </style>
 

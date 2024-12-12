@@ -3,31 +3,43 @@
 
 {% block main %}
 <link rel="stylesheet" href="{% static 'styles/management.css' %}">
-<br> 
+<br>
 <h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">DASHBOARD</h1>
 <div class="container mt-4 d-flex justify-content-center">
   <div class="w-100 row">
     <div class="col-3 dashboard-right">
-      <div>
+      <div style="height: 160px; display: flex; flex-direction: column; justify-content: center;">
         <a href="employee">
           <h4 class="text-center text-dark">TỔNG NHÂN VIÊN</h4>
           <div class="info text-center">{{ count_emp }}</div>
-          <div class="d-flex justify-content-between px-2">
-            <div class="text-dark" style="font-size: 21px;">{{ count_emp_male }}<i class="fa-solid fa-mars ms-1" style="color: #FF7043;"></i></div>
-            <div class="text-dark" style="font-size: 21px;">{{ count_emp_female }}<i class="fa-solid fa-venus ms-1" style="color: #FF7043;"></i></div>
+          <div class="d-flex justify-content-between px-3">
+            <div class="text-dark" style="font-size: 25px;font-weight: bold;">
+              {{ count_emp_male }}
+              <i class="fa-solid fa-mars ms-2" style="color: #007BFF; font-size: 28px;"></i>
+            </div>
+            <div class="text-dark" style="font-size: 25px;font-weight: bold;">
+              {{ count_emp_female }}
+              <i class="fa-solid fa-venus ms-2" style="color: #FF1493;font-size: 28px;"></i>
+            </div>
           </div>
         </a>
       </div>
-      <div>
+      <div style="height: 120px; display: flex; flex-direction: column; justify-content: center;">
         <a href="employee">
           <h4 class="text-center text-dark">TỔNG PHÒNG BAN</h4>
-          <div class="info text-center">{{ count_dpm }}</div>
+          <div class="info text-center" style="font-size: 40px;font-weight: bold;">{{ count_dpm }}</div>
         </a>
       </div>
-      <div>
-        <a href="dayoff/?status=Đã+duyệt">
-          <h4 class="text-center text-dark">NGHỈ PHÉP HÔM NAY</h4>
-          <div class="info text-center">{{ count_leave_today }}</div>
+      <div style="height: 120px; display: flex; flex-direction: column; justify-content: center;">
+        <a href="dayoff/?status=Đang+chờ">
+          <h4 class="text-center text-dark">ĐƠN NGHỈ CHƯA DUYỆT</h4>
+          <div class="info text-center" style="font-size: 40px;font-weight: bold;">{{ count_leave_today }}</div>
+        </a>
+      </div>
+      <div style="height: 120px; display: flex; flex-direction: column; justify-content: center;">
+        <a href="letter/?time=Hôm+nay">
+          <h4 class="text-center text-dark">HỘP THƯ HÔM NAY</h4>
+          <div class="info text-center" style="font-size: 40px;font-weight: bold;">{{ letter_pending }}</div>
         </a>
       </div>
     </div>
@@ -35,82 +47,89 @@
       <div class="header">
         <h4 class="text-center">PHÒNG BAN</h4>
       </div>
-      <div class="body mb-4">
-        <div class="d-flex justify-content-between">
-          <div>
-            <a href="employee/?department=Marketing">
+      <div class="body">
+        <div class="d-flex justify-content-between mb-2">
+          <div class="text-center p-2">
+            <a href="sheet/?department=Marketing&today=1">
+              <i class="fa-solid fa-bullhorn fa-2x mb-1" style="color: #FFC107;"></i>
               <div class="title text-center">Marketing</div>
-              <div class="info text-center text-dark">{{ mkt_work }}/{{ count_mkt }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ mkt_work }}/{{ count_mkt }}</div>
             </a>
           </div>
-          <div>
-            <a href="employee/?department=Tài+chính">
+          <div class="text-center p-2">
+            <a href="sheet/?department=Tài+chính&today=1">
+              <i class="fa-solid fa-money-bill-wave fa-2x mb-1" style="color: #2196F3;"></i>
               <div class="title text-center">Tài chính</div>
-              <div class="info text-center text-dark">{{ taichinh_work }}/{{ count_taichinh }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ taichinh_work }}/{{ count_taichinh }}</div>
             </a>
           </div>
-          <div>
-            <a href="employee/?department=Nhân+sự">
+          <div class="text-center p-2">
+            <a href="sheet/?department=Nhân+sự&today=1">
+              <i class="fa-solid fa-user-tie fa-2x mb-1" style="color: #FF9800;"></i>
               <div class="title text-center">Nhân sự</div>
-              <div class="info text-center text-dark">{{ nhansu_work }}/{{ count_nhansu }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ nhansu_work }}/{{ count_nhansu }}</div>
             </a>
           </div>
         </div>
-        <div class="d-flex justify-content-between">
-          <div>
-            <a href="employee/?department=IT">
+        <div class="d-flex justify-content-between mb-2">
+          <div class="text-center p-2">
+            <a href="sheet/?department=IT&today=1">
+              <i class="fa-solid fa-laptop-code fa-2x mb-1" style="color: #4CAF50;"></i>
               <div class="title text-center">IT</div>
-              <div class="info text-center text-dark">{{ it_work }}/{{ count_it }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ it_work }}/{{ count_it }}</div>
             </a>
           </div>
-          <div>
-            <a href="employee/?department=Thiết+kế">
+          <div class="text-center p-2">
+            <a href="sheet/?department=Thiết+kế&today=1">
+              <i class="fa-solid fa-palette fa-2x mb-1" style="color: #E91E63;"></i>
               <div class="title text-center">Thiết kế</div>
-              <div class="info text-center text-dark">{{ thietke_work }}/{{ count_thietke }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ thietke_work }}/{{ count_thietke }}</div>
             </a>
           </div>
-          <div>
-            <a href="employee/?department=Sản+xuất">
+          <div class="text-center p-2">
+            <a href="sheet/?department=Sản+xuất&today=1">
+              <i class="fa-solid fa-industry fa-2x mb-1" style="color: #9E9E9E;"></i>
               <div class="title text-center">Sản xuất</div>
-              <div class="info text-center text-dark">{{ sanxuat_work }}/{{ count_sanxuat }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ sanxuat_work }}/{{ count_sanxuat }}</div>
             </a>
           </div>
         </div>
-        <div class="d-flex justify-content-center">
-          <div>
-            <a href="employee/?department=Kinh+doanh">
+        <div class="d-flex justify-content-center mb-2">
+          <div class="text-center p-2">
+            <a href="sheet/?department=Kinh+doanh&today=1">
+              <i class="fa-solid fa-building fa-2x mb-1" style="color: #607D8B;"></i>
               <div class="title text-center">Kinh doanh</div>
-              <div class="info text-center text-dark">{{ kinhdoanh_work }}/{{ count_kinhdoanh }} <i class="fa-regular fa-user"></i></div>
+              <div class="info text-center text-dark">{{ kinhdoanh_work }}/{{ count_kinhdoanh }}</div>
             </a>
           </div>
         </div>
       </div>
-      <div class="header">
-        <div class="d-flex justify-content-between" style="align-items: center;">
-          <h4 class="text-center mt-5">CHẤM CÔNG</h4>
-          <div class="date-now">{{ today| date:"l, d/m/Y" }}</div>
+      <div class="header mt-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 class="text-center">CHẤM CÔNG</h4>
+          <div class="date-now">{{ today|date:"l, d/m/Y" }}</div>
         </div>
       </div>
-      <div class="body time-keeping">
-        <div class="d-flex justify-content-between w-100">
-          <div>
-            <a href="sheet/?status=Đúng+Giờ&start-date={{ today|date:'Y-m-d' }}" style="align-items: center;" class="w-100 h-100 d-flex justify-content-between">
-              <div class="title">Đúng giờ: </div>
-              <div class="count">{{ count_ontime }}</div>
-            </a>
-          </div>
-          <div>
-            <a href="sheet/?status=Đến+Muộn&start-date={{ today|date:'Y-m-d' }}" style="align-items: center;" class="w-100 h-100 d-flex justify-content-between">
-              <div class="title">Đi muộn: </div>
-              <div class="count">{{ count_late }}</div>
-            </a>
-          </div>
+      <div class="body time-keeping mt-2">
+      <div class="d-flex justify-content-between w-100">
+        <div class="d-flex align-items-center" style="height: 55px;">
+          <a href="sheet/?status=Đúng+Giờ&start-date={{ today|date:'Y-m-d' }}" class="text-success d-flex align-items-center">
+            <div class="title" style="font-weight: bold; color: #28a745; margin-right: 60px;">Đúng giờ:</div>
+            <div class="count" style="font-size: 24px; color: #28a745;">{{ count_ontime }}</div>
+          </a>
         </div>
+        <div class="d-flex align-items-center" style="height: 55px;">
+          <a href="sheet/?status=Đến+Muộn&start-date={{ today|date:'Y-m-d' }}" class="text-danger d-flex align-items-center">
+            <div class="title" style="font-weight: bold; color: #dc3545; margin-right: 60px;">Đi muộn:</div>
+            <div class="count" style="font-size: 24px; color: #dc3545;">{{ count_late }}</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
       </div>
     </div>
   </div>
 </div>
-<div>Thư chưa xử lý: {{ letter_pending }}</div>
-<div>Yêu cầu nghỉ đang chờ: {{ day_off_pending }}</div>
-<br>
+
 {% endblock %}

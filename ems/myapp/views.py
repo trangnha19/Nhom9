@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, auth
 from datetime import datetime, timedelta
 from django.db.models import Sum, Max
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 def home(request):
@@ -107,11 +108,25 @@ def sheet(request, username):
                 sheets = sheets.filter(date__range=[start_date, datetime.now().date()])
             elif end_date:
                 sheets = sheets.filter(date__range=[datetime.now().date(), end_date])
+
+            paginator = Paginator(sheets, 6)
+            page_number = request.GET.get('page', '')
+            try:
+                page_obj = paginator.get_page(page_number)
+            except PageNotAnInteger:
+                page_obj = paginator.page(1)
+            except EmptyPage:
+                page_obj = paginator.page(paginator.num_pages)
+            query_params = request.GET.copy()
+            if 'page' in query_params:
+                query_params.pop('page')
             context = {'title': title,
-                        'start_date': start_date,
-                        'end_date': end_date,
-                        'status': status,
-                       'sheets': sheets}
+                       'start_date': start_date,
+                       'end_date': end_date,
+                       'status': status,
+                       'page_obj': page_obj,
+                       'query_params': query_params.urlencode()}
+
             return render(request, 'pages/sheet.html', context)
         else:
             messages.warning(request, 'Hãy vào tài khoản của mình để xem')
@@ -122,7 +137,7 @@ def sheet(request, username):
 
 def letters(request):
     if request.user.is_authenticated:
-        title = 'Hòm thư ý kiến'
+        title = 'Hộp thư góp ý'
         my_letters = Letter.objects.filter(user=request.user)
         form = LetterForm(request.POST or None)
         if request.POST:

@@ -2,7 +2,7 @@
 
 {% block main %}
 <br>
-<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Bảng chấm công của {{ request.user.first_name }} {{ request.user.last_name }}</h1>
+<h1 style="text-align: center; font-size: 2rem; font-weight: bold; color: #D35400;">Bảng công <em>{{ request.user.first_name }} {{ request.user.last_name }}</em></h1>
 {% include 'partials/filter_sheet.html' %}
 <br>
 <table class="table table-hover table-bordered custom-border" style="border-radius: 10px; overflow: hidden;">
@@ -17,7 +17,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for sheet in sheets %}
+    {% for sheet in page_obj %}
     <tr style="transition: background-color 0.3s;">
       <td class="text-center align-middle border-cell">{{ sheet.date|date:"d/m/Y" }}</td>
       <td class="text-center align-middle border-cell">{{ sheet.checkin|date:"H:i" }}</td>
@@ -30,6 +30,9 @@
   </tbody>
 </table>
 <br>
+<!-- Phân trang -->
+{% include 'partials/paginator.html' %}
+
 
 <!--<h3 style="text-align: center; color: #D35400;">Thống kê</h3>-->
 <!--<div class="row justify-content-center" style="font-size: 18px;">-->

@@ -19,22 +19,43 @@
         </div>
       </div>
     </div>
+    {% if request.user.is_authenticated and not request.user.is_superuser %}
     <div class="col d-flex items-center">
       <div>
         <div class="text-white mb-2" style="font-size: 20px; font-weight: 700;">Các tính năng</div>
         <div class="text-white d-flex gap-3">
           <div>
-            <div style="font-size: 14px;" class="mb-2">Trang chủ</div>
             <div style="font-size: 14px;" class="mb-2">Chấm công</div>
             <div style="font-size: 14px;" class="mb-2">Bảng công</div>
+            <div style="font-size: 14px;" class="mb-2">Hồ sơ</div>
           </div>
           <div>
-            <div style="font-size: 14px;" class="mb-2">Hồ sơ cá nhân</div>
-            <div style="font-size: 14px;" class="mb-2">Đăng xuất</div>
+            <div style="font-size: 14px;" class="mb-2">Đơn nghỉ</div>
+            <div style="font-size: 14px;" class="mb-2">Hộp thư</div>
           </div>
         </div>
       </div>
     </div>
+    {% endif %}
+    {% if request.user.is_superuser %}
+    <div class="col d-flex items-center">
+      <div>
+        <div class="text-white mb-2" style="font-size: 20px; font-weight: 700;">Các tính năng</div>
+        <div class="text-white d-flex gap-3">
+          <div>
+            <div style="font-size: 14px;" class="mb-2">Bảng công</div>
+            <div style="font-size: 14px;" class="mb-2">Dashboard</div>
+            <div style="font-size: 14px;" class="mb-2">Nhân viên</div>
+          </div>
+          <div>
+            <div style="font-size: 14px;" class="mb-2">Bảng lương</div>
+            <div style="font-size: 14px;" class="mb-2">Đơn nghỉ</div>
+            <div style="font-size: 14px;" class="mb-2">Hộp thư</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
     <div class="col d-flex items-center">
       <div class="mt-3 mb-3">
         <div class="text-white mb-2" style="font-size: 20px; font-weight: 700;">Theo dõi Tabalo tại đây</div>

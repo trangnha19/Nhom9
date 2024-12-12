@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'management.context_processors.pending_dayoff',
+                'management.context_processors.pending_letter'
             ],
         },
     },

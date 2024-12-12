@@ -1,5 +1,15 @@
 <div class="col-12 d-flex justify-content-end">
   <form action="" class="col-8 d-flex gap-2 justify-content-end">
+   <div>
+  <label for="select-department">Phòng</label><br>
+  <select id="select-department" name="department" class="form-select" style="cursor: pointer;" onchange="this.form.submit()">
+    <option {% if not department %} selected {% endif %} value="">Tất Cả</option>
+    {% for dep in departments %}
+    <option value="{{ dep.name }}" {% if department == dep.name %} selected {% endif %}>{{ dep.name }}</option>
+    {% endfor %}
+   </select>
+   </div>
+
     <div>
       <label for="keyword">Từ khóa</label>
       <input class="form-control" id="keyword" type="text" placeholder="Họ tên" value="{{ keyword }}" name="keyword" style="height: 35.35px;">
